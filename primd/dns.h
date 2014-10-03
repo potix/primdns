@@ -56,6 +56,7 @@ typedef struct {
     int                       opt_user;
     int                       opt_group;
     int                       opt_port;
+    unsigned long             opt_negative;
     struct sockaddr_storage   opt_baddr;
 } dns_opts_t;
 

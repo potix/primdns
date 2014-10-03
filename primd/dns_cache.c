@@ -215,10 +215,11 @@ dns_cache_negative(dns_cache_rrset_t *rrset, uint32_t ttl)
 {
     /* assume no other thread accesses "rrset" simultaneously */
     if (ttl == 0)
-        ttl = DNS_CACHE_TTL_NEGATIVE_DEFAULT;
+        ttl = Options.opt_negative;
     if (ttl > DNS_CACHE_TTL_NEGATIVE_MAX)
         ttl = DNS_CACHE_TTL_NEGATIVE_MAX;
 
+    plog(LOG_DEBUG, "%s: negative cache ttl %lu", MODULE, ttl);
     rrset->rrset_expire = time(NULL) + ttl;
 
     ATOMIC_INC(&CacheStats.stat_rrset_negative);

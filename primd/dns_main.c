@@ -37,6 +37,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <errno.h>
 #include "dns.h"
 #include "dns_cache.h"
 #include "dns_config.h"
@@ -146,6 +147,7 @@ main_arginit(char *argv0)
     Options.opt_cache_size = DNS_DEFAULT_CACHE_SIZE;
     Options.opt_threads = DNS_DEFAULT_WORKER_THREADS;
     Options.opt_port = DNS_PORT;
+    Options.opt_negative = DNS_CACHE_TTL_NEGATIVE_DEFAULT;
 }
 
 static void
@@ -250,6 +252,17 @@ main_args(int argc, char *argv[])
                 break;
             case 'R':
                 Options.opt_recursion = 1;
+                break;
+            case 'N':
+                    if (argv[++i] == NULL)  {
+                        fprintf(stderr, "error: missing negative ttl\n");
+                        exit(EXIT_FAILURE);
+                    }
+                    errno = 0;
+                    Options.opt_negative = strtoul(argv[i], NULL, 10);
+                    if (errno != 0 || Options.opt_negative == 0) {
+                        Options.opt_negative = DNS_CACHE_TTL_NEGATIVE_DEFAULT;
+                    }
                 break;
             case '-':
                 break;   /* ignore */
