@@ -296,6 +296,7 @@ main_usage(void)
     puts("          -M [size]    cache pool size in MB");
     puts("          -T [num]     number of worker threads");
     puts("          -R           allow recursion query");
+    puts("          -N           negative cache ttl");
 
     exit(EXIT_FAILURE);
 }
