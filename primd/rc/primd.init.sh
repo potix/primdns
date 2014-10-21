@@ -18,7 +18,7 @@ PID_FILE=${PID_FILE-"/var/run/${prog}.pid"}
 EXEC_USER=${EXEC_USER-"root"}
 EXEC_GROUP=${EXEC_USER-"root"}
 EXEC_CMD=${EXEC_CMD-"/usr/sbin/${prog}"}
-CONFIG_PATH=${CONFIG_PATH-"/etc/primd.conf"}
+CONFIG_PATH=${CONFIG_PATH-"/etc/primdns/primd.conf"}
 EXEC_CMD_ARGS=${EXEC_CMD_ARGS-"-M 20 -N 3"}
 
 # util

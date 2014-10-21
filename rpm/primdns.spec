@@ -23,22 +23,21 @@ Source: %{package_name}-%{package_version}.tar.gz
 %setup
 
 %build
-./configure --prefix=$RPM_BUILD_ROOT/%{install_prefix} --sysconfdir=$RPM_BUILD_ROOT/%{sysconf_install_prefix}/etc/primdns
+./configure --prefix=$RPM_BUILD_ROOT%{install_prefix} --sysconfdir=$RPM_BUILD_ROOT%{sysconf_install_prefix}/etc/primdns
 make
 
 %install
 make install
-mkdir -p "$RPM_BUILD_ROOT/etc/init.d"
-mkdir -p "$RPM_BUILD_ROOT/etc/sysconfig"
-install -c -m 755 "%{_builddir}/%{package_name}-%{package_version}/primd/rc/primd.init.sh" "$RPM_BUILD_ROOT/etc/init.d/primd"
-install -c -m 644 "%{_builddir}/%{package_name}-%{package_version}/primd/rc/primd.sysconfig" "$RPM_BUILD_ROOT/etc/sysconfig/primd"
+mkdir -p "$RPM_BUILD_ROOT%{sysconf_install_prefix}/etc/init.d"
+mkdir -p "$RPM_BUILD_ROOT%{sysconf_install_prefix}/etc/sysconfig"
+install -c -m 755 "%{_builddir}/%{package_name}-%{package_version}/primd/rc/primd.init.sh" "$RPM_BUILD_ROOT%{sysconf_install_prefix}/etc/init.d/primd"
+install -c -m 644 "%{_builddir}/%{package_name}-%{package_version}/primd/rc/primd.sysconfig" "$RPM_BUILD_ROOT%{sysconf_install_prefix}/etc/sysconfig/primd"
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%{install_prefix}/sbin/primd
 %{install_prefix}/sbin/primd
 %{install_prefix}/sbin/primdns-axfr
 %{install_prefix}/sbin/primdns-makedb
@@ -48,5 +47,5 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{sysconf_install_prefix}/etc/primdns/localhost.zone
 %config(noreplace) %{sysconf_install_prefix}/etc/primdns/primd.conf
 %config(noreplace) %{sysconf_install_prefix}/etc/primdns/primd.conf
-/etc/init.d
-%config(noreplace) /etc/sysconfig
+%{sysconf_install_prefix}/etc/init.d
+%config(noreplace) %{sysconf_install_prefix}/etc/sysconfig
