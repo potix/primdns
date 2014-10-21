@@ -58,6 +58,7 @@ typedef struct {
     int                       opt_port;
     unsigned long             opt_negative;
     struct sockaddr_storage   opt_baddr;
+    char                     *opt_pid_file;
 } dns_opts_t;
 
 typedef struct {

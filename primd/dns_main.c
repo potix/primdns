@@ -71,6 +71,7 @@ dns_opts_t Options;
 
 char ConfPath[PATH_MAX];
 char ConfDir[PATH_MAX];
+char PidFilePath[PATH_MAX];
 
 static char *ConfNames[] = {
     "etc/primdns/primd.conf",
@@ -142,6 +143,7 @@ main_arginit(char *argv0)
         main_findconf("");
 
     Options.opt_config = ConfPath;
+    Options.opt_pid_file = PATH_PID;
     Options.opt_ipv4_enable = 1;
     Options.opt_ipv6_enable = 1;
     Options.opt_cache_size = DNS_DEFAULT_CACHE_SIZE;
@@ -182,6 +184,14 @@ main_args(int argc, char *argv[])
                 }
                 STRLCPY(ConfPath, argv[i], sizeof(ConfPath));
                 Options.opt_config = ConfPath;
+                break;
+            case 'P':
+                if (argv[++i] == NULL) {
+                    fprintf(stderr, "error: missing config file name\n");
+                    exit(EXIT_FAILURE);
+                }
+                STRLCPY(PidFilePath, argv[i], sizeof(PidFilePath));
+                Options.opt_pid_file = PidFilePath;
                 break;
             case 'd':
                 if (Options.opt_debug)
@@ -297,6 +307,7 @@ main_usage(void)
     puts("          -T [num]     number of worker threads");
     puts("          -R           allow recursion query");
     puts("          -N           negative cache ttl");
+    puts("          -P [pidfile] pid file path");
 
     exit(EXIT_FAILURE);
 }
@@ -411,7 +422,7 @@ main_make_pidfile(void)
     char buf[64];
     int fd, uid, gid, len;
 
-    if ((fd = open(PATH_PID, O_RDWR | O_CREAT | O_TRUNC, 0644)) < 0) {
+    if ((fd = open(Options.opt_pid_file, O_RDWR | O_CREAT | O_TRUNC, 0644)) < 0) {
         plog_error(LOG_WARNING, MODULE, "can't open pid file");
         return 0;
     }
@@ -508,6 +519,6 @@ main_sigterm_proc(void)
     plog(LOG_INFO, "SIGTERM received. shutting down...");
 
     dns_config_shutdown();
-    unlink(PATH_PID);
+    unlink(Options.opt_pid_file);
     exit(EXIT_SUCCESS);
 }

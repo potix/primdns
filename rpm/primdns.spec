@@ -49,4 +49,4 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{sysconf_install_prefix}/etc/primdns/primd.conf
 %config(noreplace) %{sysconf_install_prefix}/etc/primdns/primd.conf
 /etc/init.d
-/etc/sysconfig
+%config(noreplace) /etc/sysconfig
