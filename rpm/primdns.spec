@@ -5,16 +5,18 @@
 %{!?sysconf_install_prefix: %define sysconf_install_prefix /}
 #############################
 
-Name: %{package_name}
-Version: %{package_version}
-Release: 1
-Group: System Environment/Daemons
-Vendor: Satoshi Ebisawa <ebisawa@gmail.com>
+Name:     %{package_name}
+Version:  %{package_version}
+Release:  1
+Group:    System Environment/Daemons
+Vendor:   Satoshi Ebisawa <ebisawa@gmail.com>
 Packager: Hiroyuki Kakine <poti.dog@gmail.com>
-URL: https://github.com/potix/primdns
-License: BSD
-Summary: A simple DNS contents server
-Source: %{package_name}-%{package_version}.tar.gz
+URL:      https://github.com/potix/primdns
+License:  BSD
+Summary:  A simple DNS contents server
+Source:   %{package_name}-%{package_version}.tar.gz
+Requires: ruby
+Prefix:   /
 
 %description
 
