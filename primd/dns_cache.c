@@ -51,6 +51,7 @@
 
 typedef struct {
     unsigned            stat_rrset_new;
+    unsigned            stat_rrset_release;
     unsigned            stat_rrset_registered;
     unsigned            stat_rrset_negative;
     unsigned            stat_rrset_lookup;
@@ -171,6 +172,7 @@ dns_cache_lookup(dns_msg_question_t *q, unsigned category, dns_tls_t *tls)
 void
 dns_cache_release(dns_cache_rrset_t *rrset, dns_tls_t *tls)
 {
+    ATOMIC_INC(&CacheStats.stat_rrset_release);
     cache_rrset_release(rrset, tls);
 }
 
@@ -328,7 +330,9 @@ void
 dns_cache_printstats(int s)
 {
     dns_util_sendf(s, "Cache:\n");
+    dns_util_sendf(s, "    %10u rrset size\n",                                     sizeof(dns_cache_rrset_t));
     dns_util_sendf(s, "    %10u caches allocated\n",                               CacheStats.stat_rrset_new);
+    dns_util_sendf(s, "    %10u caches release\n",                                 CacheStats.stat_rrset_release);
     dns_util_sendf(s, "    %10u caches registered\n",                              CacheStats.stat_rrset_registered);
     dns_util_sendf(s, "    %10u caches were negative cache\n",                     CacheStats.stat_rrset_negative);
     dns_util_sendf(s, "    %10u times cache looked up\n",                          CacheStats.stat_rrset_lookup);
