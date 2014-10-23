@@ -47,6 +47,13 @@
 #define FORWARD_PORT_MIN   1024
 
 typedef struct {
+    unsigned        stat_queries;
+    unsigned        stat_forwarded;
+    unsigned        stat_timeout;
+    unsigned        stat_recieved;
+} forward_stats_t;
+
+typedef struct {
     struct sockaddr_storage  conf_addr;
 } forward_config_t;
 
@@ -62,6 +69,8 @@ static int forward_msg_parse_resource(dns_cache_rrset_t *rrset, dns_msg_question
 static int forward_msg_parse_resource_soa(dns_cache_rrset_t *rrset, dns_msg_handle_t *handle, int count);
 static int forward_validate_header(dns_header_t *header, uint16_t expid);
 
+static forward_stats_t ForwardStats;
+
 dns_engine_t ForwardEngine = {
     "forward", sizeof(forward_config_t),
     forward_setarg,
@@ -71,6 +80,17 @@ dns_engine_t ForwardEngine = {
     NULL,  /* notify */
     NULL,  /* dump */
 };
+
+void
+dns_forward_printstats(int s)
+{
+    dns_util_sendf(s, "Forward:\n");
+    dns_util_sendf(s, "    %10u queries requested\n",    ForwardStats.stat_queries);
+    dns_util_sendf(s, "    %10u forwarded request\n",    ForwardStats.stat_forwarded);
+    dns_util_sendf(s, "    %10u timeout response\n",     ForwardStats.stat_timeout);
+    dns_util_sendf(s, "    %10u recieved response\n",    ForwardStats.stat_recieved);
+    dns_util_sendf(s, "\n");
+}
 
 static int
 forward_setarg(dns_engine_param_t *ep, char *arg)
@@ -94,6 +114,8 @@ forward_query(dns_engine_param_t *ep, dns_cache_rrset_t *rrset, dns_msg_question
     struct sockaddr *to;
     forward_config_t *conf = (forward_config_t *) ep->ep_conf;
 
+    ATOMIC_INC(&ForwardStats.stat_queries);
+
     msgid = xarc4random(&tls->tls_arctx);
     to = (SA *) &conf->conf_addr;
 
@@ -105,7 +127,10 @@ forward_query(dns_engine_param_t *ep, dns_cache_rrset_t *rrset, dns_msg_question
         return -1;
     }
 
+    ATOMIC_INC(&ForwardStats.stat_forwarded);
+
     if (dns_util_select(s, DNS_ENGINE_TIMEOUT) < 0) {
+        ATOMIC_INC(&ForwardStats.stat_timeout);
         plog(LOG_ERR, "%s: forward query timed out: %s", MODULE, q->mq_name);
         close(s);
         return -1;
@@ -116,6 +141,8 @@ forward_query(dns_engine_param_t *ep, dns_cache_rrset_t *rrset, dns_msg_question
         close(s);
         return -1;
     }
+
+    ATOMIC_INC(&ForwardStats.stat_recieved);
 
     close(s);
 

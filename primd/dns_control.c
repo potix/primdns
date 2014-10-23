@@ -76,7 +76,7 @@ dns_control_init(void)
 {
     int uid, gid;
 
-    if ((ControlSocket = control_socket(PATH_CONTROL)) < 0) {
+    if ((ControlSocket = control_socket(Options.opt_cntrl_file)) < 0) {
         plog(LOG_WARNING, "%s: can't open control socket", MODULE);
         return 0;
     }
@@ -84,7 +84,7 @@ dns_control_init(void)
     uid = (Options.opt_user > 0) ? Options.opt_user : -1;
     gid = (Options.opt_group > 0) ? Options.opt_group : -1;
 
-    if (chown(PATH_CONTROL, uid, gid) < 0) {
+    if (chown(Options.opt_cntrl_file, uid, gid) < 0) {
         plog(LOG_ERR, "%s: chown() failed", MODULE);
         close(ControlSocket);
         return -1;
@@ -114,7 +114,7 @@ dns_control_show_status(void)
 {
     int s;
 
-    if ((s = control_connect(PATH_CONTROL)) < 0) {
+    if ((s = control_connect(Options.opt_cntrl_file)) < 0) {
         plog(LOG_ERR, "%s: can't connect to server", MODULE);
         return -1;
     }
@@ -140,7 +140,7 @@ dns_control_show_status(void)
 static void
 control_atexit(void)
 {
-    unlink(PATH_CONTROL);
+    unlink(Options.opt_cntrl_file);
 }
 
 static void *
@@ -366,6 +366,7 @@ control_command_stats(int s, char *sep, char *last)
     dns_cache_printstats(s);
     dns_data_printstats(s);
     dns_external_printstats(s);
+    dns_forward_printstats(s);
 
     /* close connection */
     return -1;

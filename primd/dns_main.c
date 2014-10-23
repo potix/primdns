@@ -72,6 +72,7 @@ dns_opts_t Options;
 char ConfPath[PATH_MAX];
 char ConfDir[PATH_MAX];
 char PidFilePath[PATH_MAX];
+char CntrlFilePath[PATH_MAX];
 
 static char *ConfNames[] = {
     "etc/primdns/primd.conf",
@@ -144,6 +145,7 @@ main_arginit(char *argv0)
 
     Options.opt_config = ConfPath;
     Options.opt_pid_file = PATH_PID;
+    Options.opt_cntrl_file = PATH_CONTROL;
     Options.opt_ipv4_enable = 1;
     Options.opt_ipv6_enable = 1;
     Options.opt_cache_size = DNS_DEFAULT_CACHE_SIZE;
@@ -192,6 +194,14 @@ main_args(int argc, char *argv[])
                 }
                 STRLCPY(PidFilePath, argv[i], sizeof(PidFilePath));
                 Options.opt_pid_file = PidFilePath;
+                break;
+            case 'C':
+                if (argv[++i] == NULL) {
+                    fprintf(stderr, "error: missing config file name\n");
+                    exit(EXIT_FAILURE);
+                }
+                STRLCPY(CntrlFilePath, argv[i], sizeof(CntrlFilePath));
+                Options.opt_cntrl_file = CntrlFilePath;
                 break;
             case 'd':
                 if (Options.opt_debug)
@@ -305,9 +315,11 @@ main_usage(void)
     puts("          -v           show version");
     puts("          -M [size]    cache pool size in MB");
     puts("          -T [num]     number of worker threads");
+    puts("          -s           show statistics");
     puts("          -R           allow recursion query");
     puts("          -N           negative cache ttl");
     puts("          -P [pidfile] pid file path");
+    puts("          -C [ctlfile] control file path");
 
     exit(EXIT_FAILURE);
 }

@@ -15,6 +15,7 @@ fi
 ulimit -n 65535
 
 PID_FILE=${PID_FILE-"/var/run/${prog}.pid"}
+CNTRL_FILE=${PID_FILE-"/var/run/${prog}.control"}
 EXEC_USER=${EXEC_USER-"root"}
 EXEC_GROUP=${EXEC_USER-"root"}
 EXEC_CMD=${EXEC_CMD-"/usr/sbin/${prog}"}
@@ -30,7 +31,7 @@ running() {
 }
 
 start() {
-    local cmd="${EXEC_CMD} -c ${CONFIG_PATH} -P ${PID_FILE} ${EXEC_CMD_ARGS}"
+    local cmd="${EXEC_CMD} -c ${CONFIG_PATH} -P ${PID_FILE} -C ${CNTRL_FILE} ${EXEC_CMD_ARGS}"
     if [ -f ${PID_FILE} ] ; then
         if running ${PID_FILE} ; then
             echo "${prog} is already running."
