@@ -1,5 +1,19 @@
-#!/bin/sh
+#!/bin/bash
 #
+# primd This shell script takes care of starting and stopping primd.
+#
+# chkconfig: - 13 87
+# description: primd is a simple Domain Name Server
+
+### BEGIN INIT INFO
+# Provides: primd
+# Required-Start: $network $syslog
+# Required-Stop:
+# Default-Start:
+# Default-Stop: 
+# Short-Description: simple Domain Name Server
+# Description:  simple Domain Name Server
+### END INIT INFO
 
 # Source function library.
 . /etc/rc.d/init.d/functions
