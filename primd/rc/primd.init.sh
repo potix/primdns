@@ -91,8 +91,10 @@ status() {
     local pid=`cat ${PID_FILE}`
     if checkpid ${pid}; then
         echo "${prog} is running... (pid: ${pid})"
+        return 0
     else
         echo "${prog} is stopped"
+        return 1
     fi
 }
 
