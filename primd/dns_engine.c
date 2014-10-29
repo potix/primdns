@@ -112,7 +112,7 @@ dns_engine_destroy(dns_engine_t *engine, void *conf)
 }
 
 dns_cache_rrset_t *
-dns_engine_query(dns_msg_question_t *q, dns_config_zone_t *zone, dns_tls_t *tls, dns_msg_question_extra_t *ex)
+dns_engine_query(dns_msg_question_t *q, dns_config_zone_t *zone, dns_tls_t *tls)
 {
     int rcode, noerror = 0;
     dns_engine_t *engine;
@@ -135,12 +135,6 @@ dns_engine_query(dns_msg_question_t *q, dns_config_zone_t *zone, dns_tls_t *tls,
             dns_cache_set_rcode(rrset, DNS_RCODE_NOERROR);
             param.ep_zone = zone;
             param.ep_conf = ze->ze_econf;
-
-	    if (ex != NULL && ex->referral && Options.opt_recursion && strcmp(engine->eng_name, "forward") == 0) {
-                 plog(LOG_DEBUG, "%s: %s engine and allow recursion", MODULE, engine->eng_name);
-                 dns_cache_release(rrset, tls);
-                 return NULL;
-            }
 
             if (engine->eng_query(&param, rrset, q, tls) < 0) {
                 dns_cache_release(rrset, tls);
