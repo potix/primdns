@@ -32,7 +32,7 @@
 #include <stdint.h>
 
 #define DNS_PORT                   53
-#define DNS_NAME_MAX              256
+#define DNS_NAME_MAX              512
 #define DNS_RDATA_MAX             256
 #define DNS_UDP_MSG_MAX           512
 #define DNS_TCP_MSG_MAX          4096
