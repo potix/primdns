@@ -279,6 +279,7 @@ dns_util_socket_sa(int pf, int type, struct sockaddr *sa)
     if (pf == PF_INET6) {
         if (setsockopt(s, IPPROTO_IPV6, IPV6_V6ONLY, &on, sizeof(on)) < 0) {
             plog_error(LOG_ERR, MODULE, "setsockopt(IPV6_V6ONLY) failed");
+            close(s);
             return -1;
         }
     }
@@ -286,12 +287,14 @@ dns_util_socket_sa(int pf, int type, struct sockaddr *sa)
     if (type == SOCK_STREAM) {
         if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0) {
             plog_error(LOG_ERR, MODULE, "setsockopt(SO_REUSEADDR) failed");
+            close(s);
             return -1;
         }
     }
 
     if (bind(s, (SA *) sa, SALEN(sa)) < 0) {
         plog_error(LOG_ERR, MODULE, "bind() failed");
+        close(s);
         return -1;
     }
 
