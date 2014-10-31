@@ -293,7 +293,7 @@ dns_util_socket_sa(int pf, int type, struct sockaddr *sa)
     }
 
     if (bind(s, (SA *) sa, SALEN(sa)) < 0) {
-        plog_error(LOG_ERR, MODULE, "bind() failed");
+        plog_error(LOG_NOTICE, MODULE, "bind() failed");
         close(s);
         return -1;
     }
