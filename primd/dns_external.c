@@ -205,7 +205,7 @@ static int
 external_read_response(dns_cache_rrset_t *rrset, int fd, dns_msg_question_t *q, dns_tls_t *tls)
 {
     int len;
-    char buf[256];
+    char buf[512];
 
     if ((len = read(fd, buf, sizeof(buf) - 1)) <= 0) {
         plog_error(LOG_ERR, MODULE, "read() failed");
