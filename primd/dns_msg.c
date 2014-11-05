@@ -230,7 +230,7 @@ dns_msg_write_question(dns_msg_handle_t *handle, dns_msg_question_t *qdata)
 }
 
 int
-dns_msg_write_resource(dns_msg_handle_t *handle, dns_msg_resource_t *res, int restype)
+dns_msg_write_resource(dns_msg_handle_t *handle, dns_msg_resource_t *res, int restype, uint32_t minimum)
 {
     int datalen;
     char *opos, data[DNS_RDATA_MAX];
@@ -250,8 +250,13 @@ dns_msg_write_resource(dns_msg_handle_t *handle, dns_msg_resource_t *res, int re
         goto error;
     if (msg_write16(handle, res->mr_q.mq_class) < 0)
         goto error;
-    if (msg_write32(handle, res->mr_ttl) < 0)
-        goto error;
+    if (minimum != 0) {
+        if (msg_write32(handle, minimum) < 0)
+            goto error;
+    } else {
+        if (msg_write32(handle, res->mr_ttl) < 0)
+            goto error;
+    }
 
     /* data */
     datalen = msg_compress(data, sizeof(data), res, handle);
@@ -862,3 +867,15 @@ msg_update_rescount(dns_msg_handle_t *handle, int restype)
         break;
     }
 }
+
+int
+msg_get_soa_minimum(dns_msg_resource_t *res, uint32_t *minimum)
+{
+    if (res->mr_datalen < 20) {
+        return 1;
+    }  
+    *minimum = ntohl(*((uint32_t *)&res->mr_data[res->mr_datalen - 4]));
+
+    return 0;
+}
+
