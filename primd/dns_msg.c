@@ -234,6 +234,7 @@ dns_msg_write_resource(dns_msg_handle_t *handle, dns_msg_resource_t *res, int re
 {
     int datalen;
     char *opos, data[DNS_RDATA_MAX];
+    uint32_t ttl;
 
     opos = (char *) handle->mh_pos;
 
@@ -250,13 +251,13 @@ dns_msg_write_resource(dns_msg_handle_t *handle, dns_msg_resource_t *res, int re
         goto error;
     if (msg_write16(handle, res->mr_q.mq_class) < 0)
         goto error;
-    if (minimum != 0) {
-        if (msg_write32(handle, minimum) < 0)
-            goto error;
-    } else {
-        if (msg_write32(handle, res->mr_ttl) < 0)
-            goto error;
+
+    ttl = res->mr_ttl;
+    if (minimum != 0 && ttl > minimum) {
+        ttl = minimum;
     }
+    if (msg_write32(handle, ttl) < 0)
+        goto error;
 
     /* data */
     datalen = msg_compress(data, sizeof(data), res, handle);
