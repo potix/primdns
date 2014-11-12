@@ -1087,7 +1087,7 @@ session_write_resources_rr(dns_session_t *session, dns_msg_handle_t *handle, dns
 {
     int i, shift;
     dns_cache_res_t *cache;
-    int rcount0 = 0;
+    int rcount0 = -1;
 
     if (rcount != NULL) {
 	/* backup resource count */
