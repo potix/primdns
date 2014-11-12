@@ -113,8 +113,8 @@ static int session_make_axfr_response(dns_sock_buf_t *sbuf, dns_session_t *sessi
 static int session_make_notify_response(dns_sock_buf_t *sbuf, dns_session_t *session);
 static int session_make_error(dns_sock_buf_t *sbuf, dns_session_t *session, int rcode, int flags);
 static int session_write_header(dns_session_t *session, dns_msg_handle_t *handle, void *buf, int rcode, int flags);
-static void session_write_resources(dns_session_t *session, dns_msg_handle_t *handle, dns_list_t *list, int restype, int *rcount);
-static void session_write_resources_rr(dns_session_t *session, dns_msg_handle_t *handle, dns_list_t *list, int restype, int rrcode, int auth_type, int *rcount);
+static int session_write_resources(dns_session_t *session, dns_msg_handle_t *handle, dns_list_t *list, int restype);
+static int session_write_resources_rr(dns_session_t *session, dns_msg_handle_t *handle, dns_list_t *list, int restype, int rrcode, int auth_type, int total_rcount);
 static void session_write_resources_ar(dns_session_t *session, dns_msg_handle_t *handle, dns_list_t *list, int type);
 static void session_write_resources_ar_q(dns_session_t *session, dns_msg_handle_t *handle, dns_msg_question_t *q);
 static void session_write_resources_opt(dns_session_t *session, dns_msg_handle_t *handle);
@@ -929,14 +929,14 @@ session_make_response(dns_sock_buf_t *sbuf, dns_session_t *session, dns_cache_rr
         return -1;
 
     /* answer */
-    session_write_resources(session, &handle, &rrset_an->rrset_list_cname, DNS_MSG_RESTYPE_ANSWER, &rcount);
+    rcount += session_write_resources(session, &handle, &rrset_an->rrset_list_cname, DNS_MSG_RESTYPE_ANSWER);
     if ((session->sess_iflags & SESSION_NO_ANSWER) == 0) {
-        session_write_resources_rr(session, &handle, &rrset_an->rrset_list_answer, DNS_MSG_RESTYPE_ANSWER, -1, auth_type, &rcount);
+        rcount += session_write_resources_rr(session, &handle, &rrset_an->rrset_list_answer, DNS_MSG_RESTYPE_ANSWER, -1, auth_type, -1);
     }
 
     /* authority & additional */
     if (rrset_ns != NULL) {
-        session_write_resources_rr(session, &handle, &rrset_ns->rrset_list_answer, DNS_MSG_RESTYPE_AUTHORITY, rrset_an->rrset_dns_rcode, auth_type, &rcount);
+        session_write_resources_rr(session, &handle, &rrset_ns->rrset_list_answer, DNS_MSG_RESTYPE_AUTHORITY, rrset_an->rrset_dns_rcode, auth_type, rcount);
     }
 
     if ((session->sess_iflags & SESSION_NO_ANSWER) == 0) {
@@ -1065,34 +1065,30 @@ session_write_header(dns_session_t *session, dns_msg_handle_t *handle, void *buf
     return 0;
 }
 
-static void
-session_write_resources(dns_session_t *session, dns_msg_handle_t *handle, dns_list_t *list, int restype, int *rcount)
+static int
+session_write_resources(dns_session_t *session, dns_msg_handle_t *handle, dns_list_t *list, int restype)
 {
+    int rcount = 0;
     dns_cache_res_t *cache;
 
     cache = DNS_CACHE_LIST_HEAD(list);
-
     while (cache != NULL) {
         if (dns_msg_write_resource(handle, &cache->cache_res, restype, 0) < 0)
             break;
-	if (rcount != NULL) {
-		rcount += 1;
-	}
+	rcount += 1;
         cache = DNS_CACHE_LIST_NEXT(list, cache);
     }
+    
+    return rcount;
 }
 
-static void
-session_write_resources_rr(dns_session_t *session, dns_msg_handle_t *handle, dns_list_t *list, int restype, int rrcode, int auth_type, int *rcount)
+static int
+session_write_resources_rr(dns_session_t *session, dns_msg_handle_t *handle, dns_list_t *list, int restype, int rrcode, int auth_type, int total_rcount)
 {
     int i, shift;
     dns_cache_res_t *cache;
-    int rcount0 = -1;
+    int rcount = 0;
 
-    if (rcount != NULL) {
-	/* backup resource count */
-        rcount0 = *rcount;
-    }
     if ((cache = DNS_CACHE_LIST_HEAD(list)) == NULL)
         return;
 
@@ -1105,7 +1101,7 @@ session_write_resources_rr(dns_session_t *session, dns_msg_handle_t *handle, dns
     for (; cache != NULL; cache = DNS_CACHE_LIST_NEXT(list, cache)) {
         uint32_t minimum = 0;
         if ((rrcode == DNS_RCODE_NXDOMAIN && auth_type == DNS_TYPE_SOA) ||
-            (rcount0 == 0 && auth_type == DNS_TYPE_SOA)) {
+            (rrcode == DNS_RCODE_NOERROR && total_rcount == 0 && auth_type == DNS_TYPE_SOA)) {
             // get minimum
             if (msg_get_soa_minimum(&cache->cache_res, &minimum)) {
                 plog(LOG_ERR, "%s: could not get minimum of soa for negative cache", MODULE);
@@ -1113,9 +1109,7 @@ session_write_resources_rr(dns_session_t *session, dns_msg_handle_t *handle, dns
         }
         if (dns_msg_write_resource(handle, &cache->cache_res, restype, minimum) < 0)
             goto truncated;
-	if (rcount != NULL) {
-		rcount += 1;
-	}
+	rcount += 1;
     }
 
     /* bottom */
@@ -1124,7 +1118,7 @@ session_write_resources_rr(dns_session_t *session, dns_msg_handle_t *handle, dns
     for (i = 0; i < shift; i++, cache = DNS_CACHE_LIST_NEXT(list, cache)) {
         uint32_t minimum = 0;
         if ((rrcode == DNS_RCODE_NXDOMAIN && auth_type == DNS_TYPE_SOA) ||
-            (rrcode == DNS_RCODE_NOERROR && rcount0 == 0 && auth_type == DNS_TYPE_SOA)) {
+            (rrcode == DNS_RCODE_NOERROR && total_rcount == 0 && auth_type == DNS_TYPE_SOA)) {
             // get minimum
             if (msg_get_soa_minimum(&cache->cache_res, &minimum)) {
                 plog(LOG_ERR, "%s: could not get minimum of soa for negative cache", MODULE);
@@ -1132,14 +1126,12 @@ session_write_resources_rr(dns_session_t *session, dns_msg_handle_t *handle, dns
         }
         if (dns_msg_write_resource(handle, &cache->cache_res, restype, minimum) < 0)
             goto truncated;
-	if (rcount != NULL) {
-		rcount += 1;
-	}
+	rcount += 1;
     }
 
 truncated:
     /* message truncated */
-    return;
+    return rcount;
 }
 
 static void
