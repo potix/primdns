@@ -182,7 +182,7 @@ forward_socket(struct sockaddr *to, dns_tls_t *tls)
             return s;
         }
     }
-    plog_error(LOG_ERR, MODULE, "failed create forward socket");
+    plog(LOG_ERR, "%s: could't create forward socket", __func__);
 
     return -1;
 }
