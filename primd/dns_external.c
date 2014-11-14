@@ -351,13 +351,6 @@ external_data_parse(dns_msg_resource_t *res, char *p)
         break;
 
     case DNS_TYPE_PTR:
-        if ((len = dns_msg_encode_name(res->mr_data, sizeof(res->mr_data), p)) < 0) {
-            plog(LOG_ERR, "%s: domain name encoding failed", MODULE);
-            return -1;
-        }
-        res->mr_datalen = len;
-        break;
-
     case DNS_TYPE_CNAME:
         if ((len = dns_msg_encode_name(res->mr_data, sizeof(res->mr_data), p)) < 0) {
             plog(LOG_ERR, "%s: domain name encoding failed", MODULE);
