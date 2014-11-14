@@ -172,8 +172,8 @@ forward_socket(struct sockaddr *to, dns_tls_t *tls)
     int i, s, port;
     uint16_t r;
 
-    /* try 10 times */
-    for (i = 0; i < 10; i++) {
+    /* try 20 times */
+    for (i = 0; i < 20; i++) {
         r = xarc4random(&tls->tls_arctx);
         port = FORWARD_PORT_MIN + (r & 0xf000);
 
@@ -182,6 +182,7 @@ forward_socket(struct sockaddr *to, dns_tls_t *tls)
             return s;
         }
     }
+    plog_error(LOG_ERR, MODULE, "failed create forward socket");
 
     return -1;
 }
