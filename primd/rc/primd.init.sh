@@ -33,7 +33,7 @@ CNTRL_FILE=${CNTRL_FILE-"/var/run/${prog}.control"}
 EXEC_USER=${EXEC_USER-"root"}
 EXEC_GROUP=${EXEC_USER-"root"}
 EXEC_CMD=${EXEC_CMD-"/usr/sbin/${prog}"}
-CONFIG_PATH=${CONFIG_PATH-"/etc/primdns/primd.conf"}
+CONFIG_PATH=${CONFIG_PATH-"/etc/primdns/${prog}.conf"}
 EXEC_CMD_ARGS=${EXEC_CMD_ARGS-"-M 100"}
 
 # util
