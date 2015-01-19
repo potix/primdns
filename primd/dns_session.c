@@ -396,6 +396,9 @@ session_request_proc(dns_session_t *session, dns_sock_buf_t *sbuf)
     return 0;
 
 error:
+    if (rcode == DNS_RCODE_SERVFAIL) {
+    	plog(LOG_ERR, "%s: responded code is server failure", MODULE);
+    }
     if (rcode > 0 && session_make_error(sbuf, session, rcode, 0) >= 0)
         session_send_response(sbuf);
     else
