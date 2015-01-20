@@ -201,7 +201,7 @@ dns_config_find_zone(int *exact, char *name, int klass)
     }
 
     if (candidate == NULL)
-        plog(LOG_DEBUG, "%s: no zone found", MODULE);
+        plog(LOG_DEBUG, "%s: no zone found (%s : %d)", MODULE, name, klass);
     else
         plog(LOG_DEBUG, "%s: found zone \"%s\"", MODULE, candidate->z_name);
 

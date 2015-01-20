@@ -375,7 +375,7 @@ session_request_proc(dns_session_t *session, dns_sock_buf_t *sbuf)
     q = &session->sess_question;
     if ((session->sess_zone = dns_config_find_zone(&session->sess_zone_exact,
                                                    q->mq_name, q->mq_class)) == NULL) {
-        rcode = DNS_RCODE_SERVFAIL;
+        rcode = DNS_RCODE_REFUSED;
         goto error;
     }
 

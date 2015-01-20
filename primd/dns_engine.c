@@ -138,6 +138,7 @@ dns_engine_query(dns_msg_question_t *q, dns_config_zone_t *zone, dns_tls_t *tls)
 
             if (engine->eng_query(&param, rrset, q, tls) < 0) {
                 dns_cache_release(rrset, tls);
+                plog(LOG_ERR, "%s: query failure \"%s\" engine", MODULE, engine->eng_name);
                 return NULL;
             }
 
