@@ -281,6 +281,7 @@ forward_udp_receive(dns_cache_rrset_t *rrset, dns_msg_question_t *q, int s, uint
     socklen_t fromlen;
     struct sockaddr_storage from;
 
+    errno = 0;
     fromlen = sizeof(from);
     if ((len = recvfrom(s, buf, sizeof(buf), 0,
                         (SA *) &from, &fromlen)) < 0) {
