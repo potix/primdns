@@ -185,6 +185,9 @@ forward_query(dns_engine_param_t *ep, dns_cache_rrset_t *rrset, dns_msg_question
         if (forward_udp_receive(rrset, q, s, msgid, tls) < 0) {
             plog(LOG_ERR, "%s: receiving response failed: %s", MODULE, q->mq_name);
             close(s);
+            if (errno == ECONNREFUSED) {
+                continue;
+            }
             return -1;
         }
 
