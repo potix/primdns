@@ -181,7 +181,7 @@ forward_query(dns_engine_param_t *ep, dns_cache_rrset_t *rrset, dns_msg_question
 
         if (dns_util_select(s, conf->conf_timeout) < 0) {
             ATOMIC_INC(&ForwardStats.stat_timeout);
-            plog(LOG_WARNING, "%s: forward query timed out: %s", MODULE, q->mq_name);
+            plog(LOG_WARNING, "%s: forward query timed out (timeout = %ds): %s", MODULE, conf->conf_timeout, q->mq_name);
             close(s);
             ATOMIC_INC(&ForwardStats.stat_try_failover);
             continue;
