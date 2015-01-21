@@ -51,8 +51,10 @@ typedef struct {
     unsigned        stat_queries;
     unsigned        stat_forwarded;
     unsigned        stat_timeout;
-    unsigned        stat_failover_failure;
+    unsigned        stat_recieve_error;
     unsigned        stat_recieved;
+    unsigned        stat_try_failover;
+    unsigned        stat_failover_failure;
 } forward_stats_t;
 
 typedef struct {
@@ -91,8 +93,10 @@ dns_forward_printstats(int s)
     dns_util_sendf(s, "    %10u queries requested\n",    ForwardStats.stat_queries);
     dns_util_sendf(s, "    %10u forwarded request\n",    ForwardStats.stat_forwarded);
     dns_util_sendf(s, "    %10u timeout response\n",     ForwardStats.stat_timeout);
-    dns_util_sendf(s, "    %10u failover failure\n",     ForwardStats.stat_failover_failure);
+    dns_util_sendf(s, "    %10u recieve error\n",        ForwardStats.stat_recieve_error);
     dns_util_sendf(s, "    %10u recieved response\n",    ForwardStats.stat_recieved);
+    dns_util_sendf(s, "    %10u try failover\n",         ForwardStats.stat_try_failover);
+    dns_util_sendf(s, "    %10u failover failure\n",     ForwardStats.stat_failover_failure);
     dns_util_sendf(s, "\n");
 }
 
@@ -179,15 +183,19 @@ forward_query(dns_engine_param_t *ep, dns_cache_rrset_t *rrset, dns_msg_question
             ATOMIC_INC(&ForwardStats.stat_timeout);
             plog(LOG_WARNING, "%s: forward query timed out: %s", MODULE, q->mq_name);
             close(s);
+            ATOMIC_INC(&ForwardStats.stat_try_failover);
             continue;
         }
 
         if (forward_udp_receive(rrset, q, s, msgid, tls) < 0) {
-            plog(LOG_ERR, "%s: receiving response failed: %s", MODULE, q->mq_name);
+            ATOMIC_INC(&ForwardStats.stat_recieve_error);
             close(s);
             if (errno == ECONNREFUSED) {
+                plog(LOG_WARNING, "%s: connection refused: %s", MODULE, q->mq_name);
+                ATOMIC_INC(&ForwardStats.stat_try_failover);
                 continue;
             }
+            plog(LOG_ERR, "%s: receiving response failed: %s", MODULE, q->mq_name);
             return -1;
         }
 
@@ -285,7 +293,7 @@ forward_udp_receive(dns_cache_rrset_t *rrset, dns_msg_question_t *q, int s, uint
     fromlen = sizeof(from);
     if ((len = recvfrom(s, buf, sizeof(buf), 0,
                         (SA *) &from, &fromlen)) < 0) {
-        plog_error(LOG_ERR, MODULE, "recvfrom() failed");
+        plog_error(LOG_WARNING, MODULE, "recvfrom() failed");
         return -1;
     }
 
