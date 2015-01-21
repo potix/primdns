@@ -42,6 +42,7 @@
 #include "dns.h"
 #include "dns_cache.h"
 #include "dns_engine.h"
+#include "dns_external.h"
 
 #define MODULE "external"
 

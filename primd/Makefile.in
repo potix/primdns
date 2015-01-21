@@ -45,19 +45,24 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(sbindir)"
 PROGRAMS = $(sbin_PROGRAMS)
-am_primd_OBJECTS = dns_abq.$(OBJEXT) dns_acl.$(OBJEXT) \
-	dns_arc4random.$(OBJEXT) dns_axfr.$(OBJEXT) dns_babq.$(OBJEXT) \
-	dns_cache.$(OBJEXT) dns_config.$(OBJEXT) dns_control.$(OBJEXT) \
-	dns_data.$(OBJEXT) dns_engine.$(OBJEXT) dns_epoll.$(OBJEXT) \
-	dns_external.$(OBJEXT) dns_file.$(OBJEXT) \
-	dns_forward.$(OBJEXT) dns_kqueue.$(OBJEXT) dns_list.$(OBJEXT) \
-	dns_log.$(OBJEXT) dns_main.$(OBJEXT) dns_msg.$(OBJEXT) \
-	dns_notify.$(OBJEXT) dns_pool.$(OBJEXT) dns_proto.$(OBJEXT) \
-	dns_query.$(OBJEXT) dns_serverid.$(OBJEXT) \
-	dns_session.$(OBJEXT) dns_sock.$(OBJEXT) dns_timer.$(OBJEXT) \
-	dns_util.$(OBJEXT)
+am_primd_OBJECTS = primd-dns_abq.$(OBJEXT) primd-dns_acl.$(OBJEXT) \
+	primd-dns_arc4random.$(OBJEXT) primd-dns_axfr.$(OBJEXT) \
+	primd-dns_babq.$(OBJEXT) primd-dns_cache.$(OBJEXT) \
+	primd-dns_config.$(OBJEXT) primd-dns_control.$(OBJEXT) \
+	primd-dns_data.$(OBJEXT) primd-dns_engine.$(OBJEXT) \
+	primd-dns_epoll.$(OBJEXT) primd-dns_external.$(OBJEXT) \
+	primd-dns_file.$(OBJEXT) primd-dns_forward.$(OBJEXT) \
+	primd-dns_kqueue.$(OBJEXT) primd-dns_list.$(OBJEXT) \
+	primd-dns_log.$(OBJEXT) primd-dns_main.$(OBJEXT) \
+	primd-dns_msg.$(OBJEXT) primd-dns_notify.$(OBJEXT) \
+	primd-dns_pool.$(OBJEXT) primd-dns_proto.$(OBJEXT) \
+	primd-dns_query.$(OBJEXT) primd-dns_serverid.$(OBJEXT) \
+	primd-dns_session.$(OBJEXT) primd-dns_sock.$(OBJEXT) \
+	primd-dns_timer.$(OBJEXT) primd-dns_util.$(OBJEXT)
 primd_OBJECTS = $(am_primd_OBJECTS)
 primd_LDADD = $(LDADD)
+primd_LINK = $(CCLD) $(primd_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -168,6 +173,7 @@ primd_SOURCES = dns_abq.c dns_acl.c dns_arc4random.c dns_axfr.c \
 	dns_forward.h dns_list.h dns_log.h dns_msg.h dns_notify.h \
 	dns_pool.h dns_proto.h dns_query.h dns_serverid.h \
 	dns_session.h dns_sock.h dns_timer.h dns_util.h
+primd_CFLAGS = -Wall -Wstrict-prototypes -Wmissing-prototypes -Wno-sign-compare -Wno-traditional -Wreturn-type -Wswitch -pipe -g -O2
 EXTRA_DIST = rc/primd.init.sh rc/primd.sysconfig
 all: all-am
 
@@ -242,7 +248,7 @@ clean-sbinPROGRAMS:
 	-test -z "$(sbin_PROGRAMS)" || rm -f $(sbin_PROGRAMS)
 primd$(EXEEXT): $(primd_OBJECTS) $(primd_DEPENDENCIES) 
 	@rm -f primd$(EXEEXT)
-	$(LINK) $(primd_OBJECTS) $(primd_LDADD) $(LIBS)
+	$(primd_LINK) $(primd_OBJECTS) $(primd_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -250,34 +256,34 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_abq.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_acl.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_arc4random.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_axfr.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_babq.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_cache.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_config.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_control.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_data.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_engine.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_epoll.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_external.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_file.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_forward.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_kqueue.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_list.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_log.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_msg.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_notify.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_pool.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_proto.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_query.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_serverid.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_session.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_sock.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_timer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_util.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_abq.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_acl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_arc4random.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_axfr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_babq.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_cache.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_config.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_control.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_data.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_engine.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_epoll.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_external.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_file.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_forward.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_kqueue.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_list.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_log.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_msg.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_notify.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_pool.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_proto.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_query.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_serverid.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_session.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_sock.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_timer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/primd-dns_util.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -292,6 +298,398 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+
+primd-dns_abq.o: dns_abq.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_abq.o -MD -MP -MF $(DEPDIR)/primd-dns_abq.Tpo -c -o primd-dns_abq.o `test -f 'dns_abq.c' || echo '$(srcdir)/'`dns_abq.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_abq.Tpo $(DEPDIR)/primd-dns_abq.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_abq.c' object='primd-dns_abq.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_abq.o `test -f 'dns_abq.c' || echo '$(srcdir)/'`dns_abq.c
+
+primd-dns_abq.obj: dns_abq.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_abq.obj -MD -MP -MF $(DEPDIR)/primd-dns_abq.Tpo -c -o primd-dns_abq.obj `if test -f 'dns_abq.c'; then $(CYGPATH_W) 'dns_abq.c'; else $(CYGPATH_W) '$(srcdir)/dns_abq.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_abq.Tpo $(DEPDIR)/primd-dns_abq.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_abq.c' object='primd-dns_abq.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_abq.obj `if test -f 'dns_abq.c'; then $(CYGPATH_W) 'dns_abq.c'; else $(CYGPATH_W) '$(srcdir)/dns_abq.c'; fi`
+
+primd-dns_acl.o: dns_acl.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_acl.o -MD -MP -MF $(DEPDIR)/primd-dns_acl.Tpo -c -o primd-dns_acl.o `test -f 'dns_acl.c' || echo '$(srcdir)/'`dns_acl.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_acl.Tpo $(DEPDIR)/primd-dns_acl.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_acl.c' object='primd-dns_acl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_acl.o `test -f 'dns_acl.c' || echo '$(srcdir)/'`dns_acl.c
+
+primd-dns_acl.obj: dns_acl.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_acl.obj -MD -MP -MF $(DEPDIR)/primd-dns_acl.Tpo -c -o primd-dns_acl.obj `if test -f 'dns_acl.c'; then $(CYGPATH_W) 'dns_acl.c'; else $(CYGPATH_W) '$(srcdir)/dns_acl.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_acl.Tpo $(DEPDIR)/primd-dns_acl.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_acl.c' object='primd-dns_acl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_acl.obj `if test -f 'dns_acl.c'; then $(CYGPATH_W) 'dns_acl.c'; else $(CYGPATH_W) '$(srcdir)/dns_acl.c'; fi`
+
+primd-dns_arc4random.o: dns_arc4random.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_arc4random.o -MD -MP -MF $(DEPDIR)/primd-dns_arc4random.Tpo -c -o primd-dns_arc4random.o `test -f 'dns_arc4random.c' || echo '$(srcdir)/'`dns_arc4random.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_arc4random.Tpo $(DEPDIR)/primd-dns_arc4random.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_arc4random.c' object='primd-dns_arc4random.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_arc4random.o `test -f 'dns_arc4random.c' || echo '$(srcdir)/'`dns_arc4random.c
+
+primd-dns_arc4random.obj: dns_arc4random.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_arc4random.obj -MD -MP -MF $(DEPDIR)/primd-dns_arc4random.Tpo -c -o primd-dns_arc4random.obj `if test -f 'dns_arc4random.c'; then $(CYGPATH_W) 'dns_arc4random.c'; else $(CYGPATH_W) '$(srcdir)/dns_arc4random.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_arc4random.Tpo $(DEPDIR)/primd-dns_arc4random.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_arc4random.c' object='primd-dns_arc4random.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_arc4random.obj `if test -f 'dns_arc4random.c'; then $(CYGPATH_W) 'dns_arc4random.c'; else $(CYGPATH_W) '$(srcdir)/dns_arc4random.c'; fi`
+
+primd-dns_axfr.o: dns_axfr.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_axfr.o -MD -MP -MF $(DEPDIR)/primd-dns_axfr.Tpo -c -o primd-dns_axfr.o `test -f 'dns_axfr.c' || echo '$(srcdir)/'`dns_axfr.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_axfr.Tpo $(DEPDIR)/primd-dns_axfr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_axfr.c' object='primd-dns_axfr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_axfr.o `test -f 'dns_axfr.c' || echo '$(srcdir)/'`dns_axfr.c
+
+primd-dns_axfr.obj: dns_axfr.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_axfr.obj -MD -MP -MF $(DEPDIR)/primd-dns_axfr.Tpo -c -o primd-dns_axfr.obj `if test -f 'dns_axfr.c'; then $(CYGPATH_W) 'dns_axfr.c'; else $(CYGPATH_W) '$(srcdir)/dns_axfr.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_axfr.Tpo $(DEPDIR)/primd-dns_axfr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_axfr.c' object='primd-dns_axfr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_axfr.obj `if test -f 'dns_axfr.c'; then $(CYGPATH_W) 'dns_axfr.c'; else $(CYGPATH_W) '$(srcdir)/dns_axfr.c'; fi`
+
+primd-dns_babq.o: dns_babq.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_babq.o -MD -MP -MF $(DEPDIR)/primd-dns_babq.Tpo -c -o primd-dns_babq.o `test -f 'dns_babq.c' || echo '$(srcdir)/'`dns_babq.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_babq.Tpo $(DEPDIR)/primd-dns_babq.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_babq.c' object='primd-dns_babq.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_babq.o `test -f 'dns_babq.c' || echo '$(srcdir)/'`dns_babq.c
+
+primd-dns_babq.obj: dns_babq.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_babq.obj -MD -MP -MF $(DEPDIR)/primd-dns_babq.Tpo -c -o primd-dns_babq.obj `if test -f 'dns_babq.c'; then $(CYGPATH_W) 'dns_babq.c'; else $(CYGPATH_W) '$(srcdir)/dns_babq.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_babq.Tpo $(DEPDIR)/primd-dns_babq.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_babq.c' object='primd-dns_babq.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_babq.obj `if test -f 'dns_babq.c'; then $(CYGPATH_W) 'dns_babq.c'; else $(CYGPATH_W) '$(srcdir)/dns_babq.c'; fi`
+
+primd-dns_cache.o: dns_cache.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_cache.o -MD -MP -MF $(DEPDIR)/primd-dns_cache.Tpo -c -o primd-dns_cache.o `test -f 'dns_cache.c' || echo '$(srcdir)/'`dns_cache.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_cache.Tpo $(DEPDIR)/primd-dns_cache.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_cache.c' object='primd-dns_cache.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_cache.o `test -f 'dns_cache.c' || echo '$(srcdir)/'`dns_cache.c
+
+primd-dns_cache.obj: dns_cache.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_cache.obj -MD -MP -MF $(DEPDIR)/primd-dns_cache.Tpo -c -o primd-dns_cache.obj `if test -f 'dns_cache.c'; then $(CYGPATH_W) 'dns_cache.c'; else $(CYGPATH_W) '$(srcdir)/dns_cache.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_cache.Tpo $(DEPDIR)/primd-dns_cache.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_cache.c' object='primd-dns_cache.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_cache.obj `if test -f 'dns_cache.c'; then $(CYGPATH_W) 'dns_cache.c'; else $(CYGPATH_W) '$(srcdir)/dns_cache.c'; fi`
+
+primd-dns_config.o: dns_config.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_config.o -MD -MP -MF $(DEPDIR)/primd-dns_config.Tpo -c -o primd-dns_config.o `test -f 'dns_config.c' || echo '$(srcdir)/'`dns_config.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_config.Tpo $(DEPDIR)/primd-dns_config.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_config.c' object='primd-dns_config.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_config.o `test -f 'dns_config.c' || echo '$(srcdir)/'`dns_config.c
+
+primd-dns_config.obj: dns_config.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_config.obj -MD -MP -MF $(DEPDIR)/primd-dns_config.Tpo -c -o primd-dns_config.obj `if test -f 'dns_config.c'; then $(CYGPATH_W) 'dns_config.c'; else $(CYGPATH_W) '$(srcdir)/dns_config.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_config.Tpo $(DEPDIR)/primd-dns_config.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_config.c' object='primd-dns_config.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_config.obj `if test -f 'dns_config.c'; then $(CYGPATH_W) 'dns_config.c'; else $(CYGPATH_W) '$(srcdir)/dns_config.c'; fi`
+
+primd-dns_control.o: dns_control.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_control.o -MD -MP -MF $(DEPDIR)/primd-dns_control.Tpo -c -o primd-dns_control.o `test -f 'dns_control.c' || echo '$(srcdir)/'`dns_control.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_control.Tpo $(DEPDIR)/primd-dns_control.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_control.c' object='primd-dns_control.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_control.o `test -f 'dns_control.c' || echo '$(srcdir)/'`dns_control.c
+
+primd-dns_control.obj: dns_control.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_control.obj -MD -MP -MF $(DEPDIR)/primd-dns_control.Tpo -c -o primd-dns_control.obj `if test -f 'dns_control.c'; then $(CYGPATH_W) 'dns_control.c'; else $(CYGPATH_W) '$(srcdir)/dns_control.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_control.Tpo $(DEPDIR)/primd-dns_control.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_control.c' object='primd-dns_control.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_control.obj `if test -f 'dns_control.c'; then $(CYGPATH_W) 'dns_control.c'; else $(CYGPATH_W) '$(srcdir)/dns_control.c'; fi`
+
+primd-dns_data.o: dns_data.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_data.o -MD -MP -MF $(DEPDIR)/primd-dns_data.Tpo -c -o primd-dns_data.o `test -f 'dns_data.c' || echo '$(srcdir)/'`dns_data.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_data.Tpo $(DEPDIR)/primd-dns_data.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_data.c' object='primd-dns_data.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_data.o `test -f 'dns_data.c' || echo '$(srcdir)/'`dns_data.c
+
+primd-dns_data.obj: dns_data.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_data.obj -MD -MP -MF $(DEPDIR)/primd-dns_data.Tpo -c -o primd-dns_data.obj `if test -f 'dns_data.c'; then $(CYGPATH_W) 'dns_data.c'; else $(CYGPATH_W) '$(srcdir)/dns_data.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_data.Tpo $(DEPDIR)/primd-dns_data.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_data.c' object='primd-dns_data.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_data.obj `if test -f 'dns_data.c'; then $(CYGPATH_W) 'dns_data.c'; else $(CYGPATH_W) '$(srcdir)/dns_data.c'; fi`
+
+primd-dns_engine.o: dns_engine.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_engine.o -MD -MP -MF $(DEPDIR)/primd-dns_engine.Tpo -c -o primd-dns_engine.o `test -f 'dns_engine.c' || echo '$(srcdir)/'`dns_engine.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_engine.Tpo $(DEPDIR)/primd-dns_engine.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_engine.c' object='primd-dns_engine.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_engine.o `test -f 'dns_engine.c' || echo '$(srcdir)/'`dns_engine.c
+
+primd-dns_engine.obj: dns_engine.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_engine.obj -MD -MP -MF $(DEPDIR)/primd-dns_engine.Tpo -c -o primd-dns_engine.obj `if test -f 'dns_engine.c'; then $(CYGPATH_W) 'dns_engine.c'; else $(CYGPATH_W) '$(srcdir)/dns_engine.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_engine.Tpo $(DEPDIR)/primd-dns_engine.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_engine.c' object='primd-dns_engine.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_engine.obj `if test -f 'dns_engine.c'; then $(CYGPATH_W) 'dns_engine.c'; else $(CYGPATH_W) '$(srcdir)/dns_engine.c'; fi`
+
+primd-dns_epoll.o: dns_epoll.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_epoll.o -MD -MP -MF $(DEPDIR)/primd-dns_epoll.Tpo -c -o primd-dns_epoll.o `test -f 'dns_epoll.c' || echo '$(srcdir)/'`dns_epoll.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_epoll.Tpo $(DEPDIR)/primd-dns_epoll.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_epoll.c' object='primd-dns_epoll.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_epoll.o `test -f 'dns_epoll.c' || echo '$(srcdir)/'`dns_epoll.c
+
+primd-dns_epoll.obj: dns_epoll.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_epoll.obj -MD -MP -MF $(DEPDIR)/primd-dns_epoll.Tpo -c -o primd-dns_epoll.obj `if test -f 'dns_epoll.c'; then $(CYGPATH_W) 'dns_epoll.c'; else $(CYGPATH_W) '$(srcdir)/dns_epoll.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_epoll.Tpo $(DEPDIR)/primd-dns_epoll.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_epoll.c' object='primd-dns_epoll.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_epoll.obj `if test -f 'dns_epoll.c'; then $(CYGPATH_W) 'dns_epoll.c'; else $(CYGPATH_W) '$(srcdir)/dns_epoll.c'; fi`
+
+primd-dns_external.o: dns_external.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_external.o -MD -MP -MF $(DEPDIR)/primd-dns_external.Tpo -c -o primd-dns_external.o `test -f 'dns_external.c' || echo '$(srcdir)/'`dns_external.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_external.Tpo $(DEPDIR)/primd-dns_external.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_external.c' object='primd-dns_external.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_external.o `test -f 'dns_external.c' || echo '$(srcdir)/'`dns_external.c
+
+primd-dns_external.obj: dns_external.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_external.obj -MD -MP -MF $(DEPDIR)/primd-dns_external.Tpo -c -o primd-dns_external.obj `if test -f 'dns_external.c'; then $(CYGPATH_W) 'dns_external.c'; else $(CYGPATH_W) '$(srcdir)/dns_external.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_external.Tpo $(DEPDIR)/primd-dns_external.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_external.c' object='primd-dns_external.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_external.obj `if test -f 'dns_external.c'; then $(CYGPATH_W) 'dns_external.c'; else $(CYGPATH_W) '$(srcdir)/dns_external.c'; fi`
+
+primd-dns_file.o: dns_file.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_file.o -MD -MP -MF $(DEPDIR)/primd-dns_file.Tpo -c -o primd-dns_file.o `test -f 'dns_file.c' || echo '$(srcdir)/'`dns_file.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_file.Tpo $(DEPDIR)/primd-dns_file.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_file.c' object='primd-dns_file.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_file.o `test -f 'dns_file.c' || echo '$(srcdir)/'`dns_file.c
+
+primd-dns_file.obj: dns_file.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_file.obj -MD -MP -MF $(DEPDIR)/primd-dns_file.Tpo -c -o primd-dns_file.obj `if test -f 'dns_file.c'; then $(CYGPATH_W) 'dns_file.c'; else $(CYGPATH_W) '$(srcdir)/dns_file.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_file.Tpo $(DEPDIR)/primd-dns_file.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_file.c' object='primd-dns_file.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_file.obj `if test -f 'dns_file.c'; then $(CYGPATH_W) 'dns_file.c'; else $(CYGPATH_W) '$(srcdir)/dns_file.c'; fi`
+
+primd-dns_forward.o: dns_forward.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_forward.o -MD -MP -MF $(DEPDIR)/primd-dns_forward.Tpo -c -o primd-dns_forward.o `test -f 'dns_forward.c' || echo '$(srcdir)/'`dns_forward.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_forward.Tpo $(DEPDIR)/primd-dns_forward.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_forward.c' object='primd-dns_forward.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_forward.o `test -f 'dns_forward.c' || echo '$(srcdir)/'`dns_forward.c
+
+primd-dns_forward.obj: dns_forward.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_forward.obj -MD -MP -MF $(DEPDIR)/primd-dns_forward.Tpo -c -o primd-dns_forward.obj `if test -f 'dns_forward.c'; then $(CYGPATH_W) 'dns_forward.c'; else $(CYGPATH_W) '$(srcdir)/dns_forward.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_forward.Tpo $(DEPDIR)/primd-dns_forward.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_forward.c' object='primd-dns_forward.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_forward.obj `if test -f 'dns_forward.c'; then $(CYGPATH_W) 'dns_forward.c'; else $(CYGPATH_W) '$(srcdir)/dns_forward.c'; fi`
+
+primd-dns_kqueue.o: dns_kqueue.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_kqueue.o -MD -MP -MF $(DEPDIR)/primd-dns_kqueue.Tpo -c -o primd-dns_kqueue.o `test -f 'dns_kqueue.c' || echo '$(srcdir)/'`dns_kqueue.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_kqueue.Tpo $(DEPDIR)/primd-dns_kqueue.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_kqueue.c' object='primd-dns_kqueue.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_kqueue.o `test -f 'dns_kqueue.c' || echo '$(srcdir)/'`dns_kqueue.c
+
+primd-dns_kqueue.obj: dns_kqueue.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_kqueue.obj -MD -MP -MF $(DEPDIR)/primd-dns_kqueue.Tpo -c -o primd-dns_kqueue.obj `if test -f 'dns_kqueue.c'; then $(CYGPATH_W) 'dns_kqueue.c'; else $(CYGPATH_W) '$(srcdir)/dns_kqueue.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_kqueue.Tpo $(DEPDIR)/primd-dns_kqueue.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_kqueue.c' object='primd-dns_kqueue.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_kqueue.obj `if test -f 'dns_kqueue.c'; then $(CYGPATH_W) 'dns_kqueue.c'; else $(CYGPATH_W) '$(srcdir)/dns_kqueue.c'; fi`
+
+primd-dns_list.o: dns_list.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_list.o -MD -MP -MF $(DEPDIR)/primd-dns_list.Tpo -c -o primd-dns_list.o `test -f 'dns_list.c' || echo '$(srcdir)/'`dns_list.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_list.Tpo $(DEPDIR)/primd-dns_list.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_list.c' object='primd-dns_list.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_list.o `test -f 'dns_list.c' || echo '$(srcdir)/'`dns_list.c
+
+primd-dns_list.obj: dns_list.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_list.obj -MD -MP -MF $(DEPDIR)/primd-dns_list.Tpo -c -o primd-dns_list.obj `if test -f 'dns_list.c'; then $(CYGPATH_W) 'dns_list.c'; else $(CYGPATH_W) '$(srcdir)/dns_list.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_list.Tpo $(DEPDIR)/primd-dns_list.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_list.c' object='primd-dns_list.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_list.obj `if test -f 'dns_list.c'; then $(CYGPATH_W) 'dns_list.c'; else $(CYGPATH_W) '$(srcdir)/dns_list.c'; fi`
+
+primd-dns_log.o: dns_log.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_log.o -MD -MP -MF $(DEPDIR)/primd-dns_log.Tpo -c -o primd-dns_log.o `test -f 'dns_log.c' || echo '$(srcdir)/'`dns_log.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_log.Tpo $(DEPDIR)/primd-dns_log.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_log.c' object='primd-dns_log.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_log.o `test -f 'dns_log.c' || echo '$(srcdir)/'`dns_log.c
+
+primd-dns_log.obj: dns_log.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_log.obj -MD -MP -MF $(DEPDIR)/primd-dns_log.Tpo -c -o primd-dns_log.obj `if test -f 'dns_log.c'; then $(CYGPATH_W) 'dns_log.c'; else $(CYGPATH_W) '$(srcdir)/dns_log.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_log.Tpo $(DEPDIR)/primd-dns_log.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_log.c' object='primd-dns_log.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_log.obj `if test -f 'dns_log.c'; then $(CYGPATH_W) 'dns_log.c'; else $(CYGPATH_W) '$(srcdir)/dns_log.c'; fi`
+
+primd-dns_main.o: dns_main.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_main.o -MD -MP -MF $(DEPDIR)/primd-dns_main.Tpo -c -o primd-dns_main.o `test -f 'dns_main.c' || echo '$(srcdir)/'`dns_main.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_main.Tpo $(DEPDIR)/primd-dns_main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_main.c' object='primd-dns_main.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_main.o `test -f 'dns_main.c' || echo '$(srcdir)/'`dns_main.c
+
+primd-dns_main.obj: dns_main.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_main.obj -MD -MP -MF $(DEPDIR)/primd-dns_main.Tpo -c -o primd-dns_main.obj `if test -f 'dns_main.c'; then $(CYGPATH_W) 'dns_main.c'; else $(CYGPATH_W) '$(srcdir)/dns_main.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_main.Tpo $(DEPDIR)/primd-dns_main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_main.c' object='primd-dns_main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_main.obj `if test -f 'dns_main.c'; then $(CYGPATH_W) 'dns_main.c'; else $(CYGPATH_W) '$(srcdir)/dns_main.c'; fi`
+
+primd-dns_msg.o: dns_msg.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_msg.o -MD -MP -MF $(DEPDIR)/primd-dns_msg.Tpo -c -o primd-dns_msg.o `test -f 'dns_msg.c' || echo '$(srcdir)/'`dns_msg.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_msg.Tpo $(DEPDIR)/primd-dns_msg.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_msg.c' object='primd-dns_msg.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_msg.o `test -f 'dns_msg.c' || echo '$(srcdir)/'`dns_msg.c
+
+primd-dns_msg.obj: dns_msg.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_msg.obj -MD -MP -MF $(DEPDIR)/primd-dns_msg.Tpo -c -o primd-dns_msg.obj `if test -f 'dns_msg.c'; then $(CYGPATH_W) 'dns_msg.c'; else $(CYGPATH_W) '$(srcdir)/dns_msg.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_msg.Tpo $(DEPDIR)/primd-dns_msg.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_msg.c' object='primd-dns_msg.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_msg.obj `if test -f 'dns_msg.c'; then $(CYGPATH_W) 'dns_msg.c'; else $(CYGPATH_W) '$(srcdir)/dns_msg.c'; fi`
+
+primd-dns_notify.o: dns_notify.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_notify.o -MD -MP -MF $(DEPDIR)/primd-dns_notify.Tpo -c -o primd-dns_notify.o `test -f 'dns_notify.c' || echo '$(srcdir)/'`dns_notify.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_notify.Tpo $(DEPDIR)/primd-dns_notify.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_notify.c' object='primd-dns_notify.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_notify.o `test -f 'dns_notify.c' || echo '$(srcdir)/'`dns_notify.c
+
+primd-dns_notify.obj: dns_notify.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_notify.obj -MD -MP -MF $(DEPDIR)/primd-dns_notify.Tpo -c -o primd-dns_notify.obj `if test -f 'dns_notify.c'; then $(CYGPATH_W) 'dns_notify.c'; else $(CYGPATH_W) '$(srcdir)/dns_notify.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_notify.Tpo $(DEPDIR)/primd-dns_notify.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_notify.c' object='primd-dns_notify.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_notify.obj `if test -f 'dns_notify.c'; then $(CYGPATH_W) 'dns_notify.c'; else $(CYGPATH_W) '$(srcdir)/dns_notify.c'; fi`
+
+primd-dns_pool.o: dns_pool.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_pool.o -MD -MP -MF $(DEPDIR)/primd-dns_pool.Tpo -c -o primd-dns_pool.o `test -f 'dns_pool.c' || echo '$(srcdir)/'`dns_pool.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_pool.Tpo $(DEPDIR)/primd-dns_pool.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_pool.c' object='primd-dns_pool.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_pool.o `test -f 'dns_pool.c' || echo '$(srcdir)/'`dns_pool.c
+
+primd-dns_pool.obj: dns_pool.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_pool.obj -MD -MP -MF $(DEPDIR)/primd-dns_pool.Tpo -c -o primd-dns_pool.obj `if test -f 'dns_pool.c'; then $(CYGPATH_W) 'dns_pool.c'; else $(CYGPATH_W) '$(srcdir)/dns_pool.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_pool.Tpo $(DEPDIR)/primd-dns_pool.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_pool.c' object='primd-dns_pool.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_pool.obj `if test -f 'dns_pool.c'; then $(CYGPATH_W) 'dns_pool.c'; else $(CYGPATH_W) '$(srcdir)/dns_pool.c'; fi`
+
+primd-dns_proto.o: dns_proto.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_proto.o -MD -MP -MF $(DEPDIR)/primd-dns_proto.Tpo -c -o primd-dns_proto.o `test -f 'dns_proto.c' || echo '$(srcdir)/'`dns_proto.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_proto.Tpo $(DEPDIR)/primd-dns_proto.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_proto.c' object='primd-dns_proto.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_proto.o `test -f 'dns_proto.c' || echo '$(srcdir)/'`dns_proto.c
+
+primd-dns_proto.obj: dns_proto.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_proto.obj -MD -MP -MF $(DEPDIR)/primd-dns_proto.Tpo -c -o primd-dns_proto.obj `if test -f 'dns_proto.c'; then $(CYGPATH_W) 'dns_proto.c'; else $(CYGPATH_W) '$(srcdir)/dns_proto.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_proto.Tpo $(DEPDIR)/primd-dns_proto.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_proto.c' object='primd-dns_proto.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_proto.obj `if test -f 'dns_proto.c'; then $(CYGPATH_W) 'dns_proto.c'; else $(CYGPATH_W) '$(srcdir)/dns_proto.c'; fi`
+
+primd-dns_query.o: dns_query.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_query.o -MD -MP -MF $(DEPDIR)/primd-dns_query.Tpo -c -o primd-dns_query.o `test -f 'dns_query.c' || echo '$(srcdir)/'`dns_query.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_query.Tpo $(DEPDIR)/primd-dns_query.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_query.c' object='primd-dns_query.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_query.o `test -f 'dns_query.c' || echo '$(srcdir)/'`dns_query.c
+
+primd-dns_query.obj: dns_query.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_query.obj -MD -MP -MF $(DEPDIR)/primd-dns_query.Tpo -c -o primd-dns_query.obj `if test -f 'dns_query.c'; then $(CYGPATH_W) 'dns_query.c'; else $(CYGPATH_W) '$(srcdir)/dns_query.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_query.Tpo $(DEPDIR)/primd-dns_query.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_query.c' object='primd-dns_query.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_query.obj `if test -f 'dns_query.c'; then $(CYGPATH_W) 'dns_query.c'; else $(CYGPATH_W) '$(srcdir)/dns_query.c'; fi`
+
+primd-dns_serverid.o: dns_serverid.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_serverid.o -MD -MP -MF $(DEPDIR)/primd-dns_serverid.Tpo -c -o primd-dns_serverid.o `test -f 'dns_serverid.c' || echo '$(srcdir)/'`dns_serverid.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_serverid.Tpo $(DEPDIR)/primd-dns_serverid.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_serverid.c' object='primd-dns_serverid.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_serverid.o `test -f 'dns_serverid.c' || echo '$(srcdir)/'`dns_serverid.c
+
+primd-dns_serverid.obj: dns_serverid.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_serverid.obj -MD -MP -MF $(DEPDIR)/primd-dns_serverid.Tpo -c -o primd-dns_serverid.obj `if test -f 'dns_serverid.c'; then $(CYGPATH_W) 'dns_serverid.c'; else $(CYGPATH_W) '$(srcdir)/dns_serverid.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_serverid.Tpo $(DEPDIR)/primd-dns_serverid.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_serverid.c' object='primd-dns_serverid.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_serverid.obj `if test -f 'dns_serverid.c'; then $(CYGPATH_W) 'dns_serverid.c'; else $(CYGPATH_W) '$(srcdir)/dns_serverid.c'; fi`
+
+primd-dns_session.o: dns_session.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_session.o -MD -MP -MF $(DEPDIR)/primd-dns_session.Tpo -c -o primd-dns_session.o `test -f 'dns_session.c' || echo '$(srcdir)/'`dns_session.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_session.Tpo $(DEPDIR)/primd-dns_session.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_session.c' object='primd-dns_session.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_session.o `test -f 'dns_session.c' || echo '$(srcdir)/'`dns_session.c
+
+primd-dns_session.obj: dns_session.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_session.obj -MD -MP -MF $(DEPDIR)/primd-dns_session.Tpo -c -o primd-dns_session.obj `if test -f 'dns_session.c'; then $(CYGPATH_W) 'dns_session.c'; else $(CYGPATH_W) '$(srcdir)/dns_session.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_session.Tpo $(DEPDIR)/primd-dns_session.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_session.c' object='primd-dns_session.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_session.obj `if test -f 'dns_session.c'; then $(CYGPATH_W) 'dns_session.c'; else $(CYGPATH_W) '$(srcdir)/dns_session.c'; fi`
+
+primd-dns_sock.o: dns_sock.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_sock.o -MD -MP -MF $(DEPDIR)/primd-dns_sock.Tpo -c -o primd-dns_sock.o `test -f 'dns_sock.c' || echo '$(srcdir)/'`dns_sock.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_sock.Tpo $(DEPDIR)/primd-dns_sock.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_sock.c' object='primd-dns_sock.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_sock.o `test -f 'dns_sock.c' || echo '$(srcdir)/'`dns_sock.c
+
+primd-dns_sock.obj: dns_sock.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_sock.obj -MD -MP -MF $(DEPDIR)/primd-dns_sock.Tpo -c -o primd-dns_sock.obj `if test -f 'dns_sock.c'; then $(CYGPATH_W) 'dns_sock.c'; else $(CYGPATH_W) '$(srcdir)/dns_sock.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_sock.Tpo $(DEPDIR)/primd-dns_sock.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_sock.c' object='primd-dns_sock.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_sock.obj `if test -f 'dns_sock.c'; then $(CYGPATH_W) 'dns_sock.c'; else $(CYGPATH_W) '$(srcdir)/dns_sock.c'; fi`
+
+primd-dns_timer.o: dns_timer.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_timer.o -MD -MP -MF $(DEPDIR)/primd-dns_timer.Tpo -c -o primd-dns_timer.o `test -f 'dns_timer.c' || echo '$(srcdir)/'`dns_timer.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_timer.Tpo $(DEPDIR)/primd-dns_timer.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_timer.c' object='primd-dns_timer.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_timer.o `test -f 'dns_timer.c' || echo '$(srcdir)/'`dns_timer.c
+
+primd-dns_timer.obj: dns_timer.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_timer.obj -MD -MP -MF $(DEPDIR)/primd-dns_timer.Tpo -c -o primd-dns_timer.obj `if test -f 'dns_timer.c'; then $(CYGPATH_W) 'dns_timer.c'; else $(CYGPATH_W) '$(srcdir)/dns_timer.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_timer.Tpo $(DEPDIR)/primd-dns_timer.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_timer.c' object='primd-dns_timer.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_timer.obj `if test -f 'dns_timer.c'; then $(CYGPATH_W) 'dns_timer.c'; else $(CYGPATH_W) '$(srcdir)/dns_timer.c'; fi`
+
+primd-dns_util.o: dns_util.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_util.o -MD -MP -MF $(DEPDIR)/primd-dns_util.Tpo -c -o primd-dns_util.o `test -f 'dns_util.c' || echo '$(srcdir)/'`dns_util.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_util.Tpo $(DEPDIR)/primd-dns_util.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_util.c' object='primd-dns_util.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_util.o `test -f 'dns_util.c' || echo '$(srcdir)/'`dns_util.c
+
+primd-dns_util.obj: dns_util.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -MT primd-dns_util.obj -MD -MP -MF $(DEPDIR)/primd-dns_util.Tpo -c -o primd-dns_util.obj `if test -f 'dns_util.c'; then $(CYGPATH_W) 'dns_util.c'; else $(CYGPATH_W) '$(srcdir)/dns_util.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/primd-dns_util.Tpo $(DEPDIR)/primd-dns_util.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns_util.c' object='primd-dns_util.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(primd_CFLAGS) $(CFLAGS) -c -o primd-dns_util.obj `if test -f 'dns_util.c'; then $(CYGPATH_W) 'dns_util.c'; else $(CYGPATH_W) '$(srcdir)/dns_util.c'; fi`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \

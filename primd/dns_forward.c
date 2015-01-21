@@ -44,22 +44,25 @@
 
 #define MODULE "forward"
 
+#define MAX_FORWARDS       4
 #define FORWARD_PORT_MIN   1024
 
 typedef struct {
     unsigned        stat_queries;
     unsigned        stat_forwarded;
     unsigned        stat_timeout;
+    unsigned        stat_failover_failure;
     unsigned        stat_recieved;
 } forward_stats_t;
 
 typedef struct {
-    struct sockaddr_storage  conf_addr;
+    struct sockaddr_storage  conf_addr[MAX_FORWARDS];
+    int conf_addr_cnt;
+    int conf_timeout;
 } forward_config_t;
 
 static int forward_setarg(dns_engine_param_t *ep, char *arg);
 static int forward_query(dns_engine_param_t *ep, dns_cache_rrset_t *rrset, dns_msg_question_t *q, dns_tls_t *tls);
-
 static int forward_connect(struct sockaddr *to, dns_tls_t *tls);
 static int forward_socket(struct sockaddr *to, dns_tls_t *tls);
 static int forward_send(int s, dns_msg_question_t *q, uint16_t msgid);
@@ -88,6 +91,7 @@ dns_forward_printstats(int s)
     dns_util_sendf(s, "    %10u queries requested\n",    ForwardStats.stat_queries);
     dns_util_sendf(s, "    %10u forwarded request\n",    ForwardStats.stat_forwarded);
     dns_util_sendf(s, "    %10u timeout response\n",     ForwardStats.stat_timeout);
+    dns_util_sendf(s, "    %10u failover failure\n",     ForwardStats.stat_failover_failure);
     dns_util_sendf(s, "    %10u recieved response\n",    ForwardStats.stat_recieved);
     dns_util_sendf(s, "\n");
 }
@@ -95,13 +99,51 @@ dns_forward_printstats(int s)
 static int
 forward_setarg(dns_engine_param_t *ep, char *arg)
 {
+    char *larg;
+    char *sptr, *eptr;
     struct sockaddr_storage ss;
     forward_config_t *conf = (forward_config_t *) ep->ep_conf;
 
-    if (dns_util_str2sa((SA *) &ss, arg, DNS_PORT) < 0)
+    larg = sptr = strdup(arg);
+    if (larg == NULL) {
         return -1;
+    }
 
-    memcpy(&conf->conf_addr, &ss, sizeof(conf->conf_addr));
+    // timeout
+    conf->conf_timeout = DNS_ENGINE_TIMEOUT;
+    eptr = strchr(sptr, ' ');
+    if (eptr != NULL) {
+        *eptr = '\0';
+        conf->conf_timeout = atoi(sptr);
+        if (conf->conf_timeout <= 0) {
+	    conf->conf_timeout = DNS_ENGINE_TIMEOUT;
+	}
+        sptr = eptr + 1;
+    }
+
+    // addrs
+    conf->conf_addr_cnt = 0;
+    while (1) {
+        eptr = strchr(sptr, ',');
+        if (eptr == NULL) {
+            break;
+        }
+        *eptr = '\0';
+        if (dns_util_str2sa((SA *) &ss, sptr, DNS_PORT) < 0) {
+            free(larg);
+            return -1;
+        }
+        memcpy(&conf->conf_addr[conf->conf_addr_cnt], &ss, sizeof(conf->conf_addr[0]));
+        conf->conf_addr_cnt++;
+        sptr = eptr + 1;
+    }
+    if (dns_util_str2sa((SA *) &ss, sptr, DNS_PORT) < 0) {
+        free(larg);
+        return -1;
+    }
+    memcpy(&conf->conf_addr[conf->conf_addr_cnt], &ss, sizeof(conf->conf_addr[0]));
+    conf->conf_addr_cnt++;
+    free(larg);
 
     return 0;
 }
@@ -109,6 +151,7 @@ forward_setarg(dns_engine_param_t *ep, char *arg)
 static int
 forward_query(dns_engine_param_t *ep, dns_cache_rrset_t *rrset, dns_msg_question_t *q, dns_tls_t *tls)
 {
+    int i;
     int s;
     uint16_t msgid;
     struct sockaddr *to;
@@ -116,37 +159,43 @@ forward_query(dns_engine_param_t *ep, dns_cache_rrset_t *rrset, dns_msg_question
 
     ATOMIC_INC(&ForwardStats.stat_queries);
 
-    msgid = xarc4random(&tls->tls_arctx);
-    to = (SA *) &conf->conf_addr;
+    for (i = 0; i < conf->conf_addr_cnt; i++) {
+        msgid = xarc4random(&tls->tls_arctx);
+        to = (SA *) &conf->conf_addr[i];
 
-    if ((s = forward_connect(to, tls)) < 0)
-        return -1;
+        if ((s = forward_connect(to, tls)) < 0)
+            return -1;
 
-    if (forward_send(s, q, msgid) < 0) {
+        if (forward_send(s, q, msgid) < 0) {
+            close(s);
+            return -1;
+        }
+
+        ATOMIC_INC(&ForwardStats.stat_forwarded);
+
+        if (dns_util_select(s, conf->conf_timeout) < 0) {
+            ATOMIC_INC(&ForwardStats.stat_timeout);
+            plog(LOG_WARNING, "%s: forward query timed out: %s", MODULE, q->mq_name);
+            close(s);
+            continue;
+        }
+
+        if (forward_udp_receive(rrset, q, s, msgid, tls) < 0) {
+            plog(LOG_ERR, "%s: receiving response failed: %s", MODULE, q->mq_name);
+            close(s);
+            return -1;
+        }
+
+        ATOMIC_INC(&ForwardStats.stat_recieved);
         close(s);
-        return -1;
+
+        return 0;
     }
 
-    ATOMIC_INC(&ForwardStats.stat_forwarded);
+    ATOMIC_INC(&ForwardStats.stat_failover_failure);
+    plog(LOG_ERR, "%s: failover failure: %s", MODULE, q->mq_name);
 
-    if (dns_util_select(s, DNS_ENGINE_TIMEOUT) < 0) {
-        ATOMIC_INC(&ForwardStats.stat_timeout);
-        plog(LOG_WARNING, "%s: forward query timed out: %s", MODULE, q->mq_name);
-        close(s);
-        return -1;
-    }
-
-    if (forward_udp_receive(rrset, q, s, msgid, tls) < 0) {
-        plog(LOG_ERR, "%s: receiving response failed: %s", MODULE, q->mq_name);
-        close(s);
-        return -1;
-    }
-
-    ATOMIC_INC(&ForwardStats.stat_recieved);
-
-    close(s);
-
-    return 0;
+    return -1;
 }
 
 static int

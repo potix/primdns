@@ -1093,7 +1093,7 @@ session_write_resources_rr(dns_session_t *session, dns_msg_handle_t *handle, dns
     int rcount = 0;
 
     if ((cache = DNS_CACHE_LIST_HEAD(list)) == NULL)
-        return;
+        return rcount;
 
     /* round robin answers */
     shift = session->sess_dns_msgid % dns_list_count(list);

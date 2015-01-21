@@ -39,6 +39,7 @@
 #include <arpa/inet.h>
 #include "dns.h"
 #include "dns_cache.h"
+#include "dns_query.h"
 
 #define MODULE "query"
 

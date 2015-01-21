@@ -33,4 +33,6 @@
 
 extern dns_engine_t ForwardEngine;
 
+void dns_forward_printstats(int s);
+
 #endif

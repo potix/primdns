@@ -43,6 +43,7 @@
 #include "dns_data.h"
 #include "dns_external.h"
 #include "dns_session.h"
+#include "dns_forward.h"
 
 #define MODULE "control"
 

@@ -558,7 +558,7 @@ config_get_token(config_token_t *token, config_context_t *ctx)
     if (dns_file_get_token(buf, sizeof(buf), &ctx->ctx_handle) < 0)
         return -1;
 
-//    plog(LOG_DEBUG, "%s: token \"%s\"", MODULE, buf);
+    plog(LOG_DEBUG, "%s: token \"%s\"", MODULE, buf);
     config_tokenize(token, buf);
 
     return 0;

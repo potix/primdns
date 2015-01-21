@@ -92,4 +92,8 @@ int dns_sock_send(dns_sock_buf_t *sbuf);
 void dns_sock_free(dns_sock_t *sock);
 dns_sock_t *dns_sock_udp_new(int sock_fd, dns_sock_prop_t *sprop);
 
+int dns_sock_event_init(dns_sock_event_t *swait);
+int dns_sock_event_add(dns_sock_event_t *swait, dns_sock_t *sock);
+int dns_sock_event_wait(dns_sock_t **socks, int sock_max, dns_sock_event_t *swait, struct timeval *timeout);
+
 #endif
