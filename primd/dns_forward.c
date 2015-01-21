@@ -123,7 +123,7 @@ forward_setarg(dns_engine_param_t *ep, char *arg)
 
     // addrs
     conf->conf_addr_cnt = 0;
-    while (1) {
+    while (conf->conf_addr_cnt < MAX_FORWARDS) {
         eptr = strchr(sptr, ',');
         if (eptr == NULL) {
             break;
@@ -137,12 +137,14 @@ forward_setarg(dns_engine_param_t *ep, char *arg)
         conf->conf_addr_cnt++;
         sptr = eptr + 1;
     }
-    if (dns_util_str2sa((SA *) &ss, sptr, DNS_PORT) < 0) {
-        free(larg);
-        return -1;
+    if (conf->conf_addr_cnt < MAX_FORWARDS) {
+        if (dns_util_str2sa((SA *) &ss, sptr, DNS_PORT) < 0) {
+            free(larg);
+            return -1;
+        }
+        memcpy(&conf->conf_addr[conf->conf_addr_cnt], &ss, sizeof(conf->conf_addr[0]));
+        conf->conf_addr_cnt++;
     }
-    memcpy(&conf->conf_addr[conf->conf_addr_cnt], &ss, sizeof(conf->conf_addr[0]));
-    conf->conf_addr_cnt++;
     free(larg);
 
     return 0;
