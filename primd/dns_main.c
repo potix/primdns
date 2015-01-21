@@ -189,7 +189,7 @@ main_args(int argc, char *argv[])
                 break;
             case 'P':
                 if (argv[++i] == NULL) {
-                    fprintf(stderr, "error: missing config file name\n");
+                    fprintf(stderr, "error: missing process id file name\n");
                     exit(EXIT_FAILURE);
                 }
                 STRLCPY(PidFilePath, argv[i], sizeof(PidFilePath));
@@ -197,7 +197,7 @@ main_args(int argc, char *argv[])
                 break;
             case 'C':
                 if (argv[++i] == NULL) {
-                    fprintf(stderr, "error: missing config file name\n");
+                    fprintf(stderr, "error: missing control file name\n");
                     exit(EXIT_FAILURE);
                 }
                 STRLCPY(CntrlFilePath, argv[i], sizeof(CntrlFilePath));
