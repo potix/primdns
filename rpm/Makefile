@@ -1,7 +1,7 @@
 PATH:=$(PATH):/usr/local/bin:/usr/bin:/bin
 make?=make
 package_name=primdns
-package_version=0.9
+package_version=0.9.1
 install_prefix?=/usr
 sysconf_install_prefix?=/
 top_dir=$(shell pwd | sed 's/ /\\ /g')
