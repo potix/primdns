@@ -132,6 +132,8 @@ dns_engine_query(dns_msg_question_t *q, dns_config_zone_t *zone, dns_tls_t *tls)
         if (engine->eng_query != NULL) {
             plog(LOG_DEBUG, "%s: query \"%s\" engine", MODULE, engine->eng_name);
 
+            rrset->rrset_last_engine = engine->eng_name;
+
             dns_cache_set_rcode(rrset, DNS_RCODE_NOERROR);
             param.ep_zone = zone;
             param.ep_conf = ze->ze_econf;
@@ -157,6 +159,7 @@ dns_engine_query(dns_msg_question_t *q, dns_config_zone_t *zone, dns_tls_t *tls)
 
         ze = (dns_config_zone_engine_t *) dns_list_next(&zone->z_search.zs_engine, &ze->ze_elem);
     }
+    rrset->rrset_last_engine = NULL;
 
     dns_cache_set_rcode(rrset, (noerror) ? DNS_RCODE_NOERROR : DNS_RCODE_NXDOMAIN);
     dns_cache_negative(rrset, 0);

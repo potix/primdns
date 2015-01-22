@@ -95,7 +95,7 @@ static int session_read_edns_opt(dns_session_t *session, dns_sock_buf_t *sbuf, d
 static int session_check_question_header(dns_header_t *header);
 static dns_cache_rrset_t *session_query_answer(dns_session_t *session, dns_sock_buf_t *sbuf);
 static dns_cache_rrset_t *session_query_authority(dns_session_t *session, dns_cache_rrset_t *rrset, int *auth_type);
-static dns_cache_rrset_t *session_query_referral(dns_session_t *session);
+static dns_cache_rrset_t *session_query_referral(dns_session_t *session, const char *last_engine);
 static dns_cache_rrset_t *session_query_referral_do(dns_session_t *session, char *name);
 static dns_cache_rrset_t *session_query_recursive(dns_session_t *session, dns_config_zone_t *zone, dns_msg_question_t *q, int nlevel);
 static void session_query_cname(dns_session_t *session, dns_msg_question_t *q, dns_cache_rrset_t *rrset, int nlevel);
@@ -629,7 +629,6 @@ session_query_answer(dns_session_t *session, dns_sock_buf_t *sbuf)
             if (!session->sess_zone_exact)
                 dns_cache_delete_answers(rrset, &session->sess_tls);
         }
-
         dns_cache_register(rrset, 0, &session->sess_tls);
     }
 
@@ -643,7 +642,7 @@ session_query_authority(dns_session_t *session, dns_cache_rrset_t *rrset_an, int
     dns_cache_rrset_t *rrset_ns = NULL;
 
     /* referral */
-    if ((rrset_ns = session_query_referral(session)) != NULL) {
+    if ((rrset_ns = session_query_referral(session, rrset_an->rrset_last_engine)) != NULL) {
         dns_cache_set_rcode(rrset_an, DNS_RCODE_NOERROR);
         if (!Options.opt_recursion) {
             session->sess_iflags |= SESSION_NO_ANSWER;
@@ -676,26 +675,48 @@ session_query_authority(dns_session_t *session, dns_cache_rrset_t *rrset_an, int
 }
 
 static dns_cache_rrset_t *
-session_query_referral(dns_session_t *session)
+session_query_referral(dns_session_t *session, const char *last_engine)
 {
     char *p;
     int offs;
+    int level;
     dns_cache_rrset_t *rrset;
 
-    offs = strlen(session->sess_qlast.mq_name) - strlen(session->sess_zone->z_name);
-    p = &session->sess_qlast.mq_name[offs];
-
-    if (offs < 2)
-        return NULL;
-
-    for (offs -= 2, p -= 2; offs >= 0; offs--, p--) {
-        if (offs == 0 || *(p - 1) == '.') {
+    if (last_engine != NULL && strcasecmp(last_engine, "forward") == 0) {
+        level = 0;
+        p = session->sess_qlast.mq_name;
+        while (1) {
             if ((rrset = session_query_referral_do(session, p)) != NULL)
                 return rrset;
+            p = strchr(p , '.');
+            if (p == NULL)
+                return NULL;
+            p++;
+            if (strlen(p) < 2)
+                return NULL;
+            level++;
+            if (level > DNS_REFERRAL_LEVEL_MAX) {
+                return NULL;
+            }
+       }
+        
+    } else {
+        offs = strlen(session->sess_qlast.mq_name) - strlen(session->sess_zone->z_name);
+        p = &session->sess_qlast.mq_name[offs];
+
+        if (offs < 2)
+            return NULL;
+
+        for (offs -= 2, p -= 2; offs >= 0; offs--, p--) {
+            if (offs == 0 || *(p - 1) == '.') {
+                if ((rrset = session_query_referral_do(session, p)) != NULL)
+                    return rrset;
+            }
         }
+
+        return NULL;
     }
 
-    return NULL;
 }
 
 static dns_cache_rrset_t *

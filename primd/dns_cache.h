@@ -68,6 +68,7 @@ typedef struct {
     time_t               rrset_expire;
     dns_list_t           rrset_list_answer;
     dns_list_t           rrset_list_cname;
+    const char		 *rrset_last_engine;
 } dns_cache_rrset_t;
 
 int dns_cache_init(int cache_kb, int threads);

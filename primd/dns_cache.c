@@ -360,6 +360,7 @@ cache_rrset_get(dns_msg_question_t *q, dns_tls_t *tls)
     rrset->rrset_dns_rcode = DNS_RCODE_NOERROR;
     rrset->rrset_dns_flags = 0;
     rrset->rrset_expire = 0;
+    rrset->rrset_last_engine = NULL;
 
     dns_list_init(&rrset->rrset_list_answer);
     dns_list_init(&rrset->rrset_list_cname);
