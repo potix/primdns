@@ -325,10 +325,8 @@ forward_msg_parse(dns_cache_rrset_t *rrset, dns_msg_question_t *q, char *buf, in
     rcode = DNS_RCODE(flags);
 
     if (flags & DNS_FLAG_TC) {
-        /* XXX fallback to TCP */
-        plog(LOG_NOTICE, "%s: XXX truncated message is not supported", MODULE);
-        dns_msg_read_close(&handle);
-        return -1;
+        plog(LOG_DEBUG, "%s: truncated message", MODULE);
+        dns_cache_set_flags(rrset, DNS_FLAG_TC);
     }
 
     if (forward_validate_header(&header, msgid) < 0) {
