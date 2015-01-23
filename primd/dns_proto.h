@@ -38,7 +38,7 @@
 #define DNS_TCP_MSG_MAX          4096
 #define DNS_MSG_MAX   DNS_TCP_MSG_MAX
 #define DNS_CNAME_NEST_MAX          8
-#define DNS_REFERRAL_LEVEL_MAX     50
+#define DNS_REFERRAL_LEVEL_MAX     16
 
 typedef struct {
     uint16_t  hdr_id;
