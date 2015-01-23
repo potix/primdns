@@ -750,8 +750,11 @@ session_query_recursive(dns_session_t *session, dns_config_zone_t *zone, dns_msg
     dns_cache_rrset_t *rrset;
 
     if ((rrset = dns_engine_query(q, zone, &session->sess_tls)) != NULL) {
-        if (dns_list_count(&rrset->rrset_list_cname) > 0)
-            session_query_cname(session, q, rrset, nlevel + 1);
+        if (rrset->rrset_last_engine == NULL || strcasecmp(rrset->rrset_last_engine, "forward") != 0) {
+            if (dns_list_count(&rrset->rrset_list_cname) > 0) {
+                session_query_cname(session, q, rrset, nlevel + 1);
+            }
+        }
     }
 
     return rrset;
