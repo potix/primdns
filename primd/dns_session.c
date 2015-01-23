@@ -644,7 +644,7 @@ session_query_authority(dns_session_t *session, dns_cache_rrset_t *rrset_an, int
     /* referral */
     if ((rrset_ns = session_query_referral(session, rrset_an->rrset_last_engine)) != NULL) {
         dns_cache_set_rcode(rrset_an, DNS_RCODE_NOERROR);
-        if (!Options.opt_recursion) {
+        if (rrset_an->rrset_last_engine == NULL || strcasecmp(rrset_an->rrset_last_engine, "forward") != 0) {
             session->sess_iflags |= SESSION_NO_ANSWER;
         }
 
@@ -685,19 +685,26 @@ session_query_referral(dns_session_t *session, const char *last_engine)
     if (last_engine != NULL && strcasecmp(last_engine, "forward") == 0) {
         level = 0;
         p = session->sess_qlast.mq_name;
+
         while (1) {
+
             if ((rrset = session_query_referral_do(session, p)) != NULL)
                 return rrset;
+
             p = strchr(p , '.');
+
             if (p == NULL)
                 return NULL;
+
             p++;
+
             if (strlen(p) < 2)
                 return NULL;
+
             level++;
-            if (level > DNS_REFERRAL_LEVEL_MAX) {
+
+            if (level > DNS_REFERRAL_LEVEL_MAX)
                 return NULL;
-            }
        }
         
     } else {

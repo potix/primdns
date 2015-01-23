@@ -50,7 +50,6 @@ typedef struct {
     unsigned                  opt_ipv6_enable : 1;
     unsigned                  opt_debug       : 1;
     unsigned                  opt_foreground  : 1;
-    unsigned                  opt_recursion   : 1;
     int                       opt_cache_size;
     int                       opt_threads;
     int                       opt_user;

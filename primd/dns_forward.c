@@ -367,6 +367,9 @@ forward_msg_parse(dns_cache_rrset_t *rrset, dns_msg_question_t *q, char *buf, in
 
     dns_msg_read_close(&handle);
     dns_cache_set_rcode(rrset, rcode);
+    if (flags & DNS_FLAG_RA) {
+        dns_cache_set_flags(rrset, DNS_FLAG_RA);
+    }
 
     return 0;
 }

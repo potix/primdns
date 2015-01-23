@@ -270,9 +270,6 @@ main_args(int argc, char *argv[])
                 }
                 Options.opt_threads = atoi(argv[i]);
                 break;
-            case 'R':
-                Options.opt_recursion = 1;
-                break;
             case 'N':
                     if (argv[++i] == NULL)  {
                         fprintf(stderr, "error: missing negative ttl\n");
@@ -316,7 +313,6 @@ main_usage(void)
     puts("          -M [size]    cache pool size in MB");
     puts("          -T [num]     number of worker threads");
     puts("          -s           show statistics");
-    puts("          -R           allow recursion query");
     puts("          -N           negative cache ttl");
     puts("          -P [pidfile] pid file path");
     puts("          -C [ctlfile] control file path");
