@@ -37,6 +37,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <netdb.h>
 #include "dns.h"
 #include "dns_cache.h"
 #include "dns_engine.h"
@@ -288,12 +289,18 @@ forward_udp_receive(dns_cache_rrset_t *rrset, dns_msg_question_t *q, int s, uint
     char buf[DNS_UDP_MSG_MAX];
     socklen_t fromlen;
     struct sockaddr_storage from;
+    char host[NI_MAXHOST];
+    char port[NI_MAXSERV];
 
     errno = 0;
     fromlen = sizeof(from);
     if ((len = recvfrom(s, buf, sizeof(buf), 0,
                         (SA *) &from, &fromlen)) < 0) {
-        plog_error(LOG_WARNING, MODULE, "recvfrom() failed");
+        if (getnameinfo((struct sockaddr *)&from, fromlen, host, sizeof(host), port, sizeof(port), NI_NUMERICHOST | NI_NUMERICSERV) != 0) {
+            plog_error(LOG_WARNING, MODULE, "recvfrom() failed from %s:%s", "unkown", "unkown");
+        } else { 
+            plog_error(LOG_WARNING, MODULE, "recvfrom() failed from %s:%s", host, port);
+        }
         return -1;
     }
 
@@ -432,7 +439,7 @@ forward_validate_header(dns_header_t *header, uint16_t expid)
     flags = ntohs(header->hdr_flags);
 
     if (msgid != expid) {
-        plog(LOG_NOTICE, "%s: message id mismatch", MODULE);
+        plog(LOG_NOTICE, "%s: message id mismatch (actual %x != expected %x)", MODULE, msgid, expid);
         return -1;
     }
 

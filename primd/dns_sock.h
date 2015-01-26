@@ -56,6 +56,7 @@ typedef struct dns_sock dns_sock_t;
 typedef struct {
     dns_sock_t               *sb_sock;
     struct sockaddr_storage   sb_remote;
+    socklen_t                 sb_remote_len;
     int                       sb_buflen;
     char                      sb_buf[DNS_MSG_MAX];
 } dns_sock_buf_t;

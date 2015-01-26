@@ -38,6 +38,7 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <netdb.h>
 #include "dns.h"
 #include "dns_acl.h"
 #include "dns_babq.h"
@@ -276,6 +277,7 @@ session_request_multi(dns_sock_t *sock, int thread_id)
 {
     dns_sock_buf_t *sbuf;
     dns_session_t *session;
+  
 
     plog(LOG_DEBUG, "%s: multiworker mode", MODULE);
 
@@ -368,6 +370,8 @@ session_request_proc(dns_session_t *session, dns_sock_buf_t *sbuf)
 {
     int rcode;
     dns_msg_question_t *q;
+    char host[NI_MAXHOST];
+    char port[NI_MAXSERV];
 
     if ((rcode = session_read_question(session, sbuf)) != DNS_RCODE_NOERROR)
         goto error;
@@ -397,7 +401,11 @@ session_request_proc(dns_session_t *session, dns_sock_buf_t *sbuf)
 
 error:
     if (rcode == DNS_RCODE_SERVFAIL) {
-    	plog(LOG_ERR, "%s: responded code is server failure", MODULE);
+        if (getnameinfo((struct sockaddr *)&sbuf->sb_remote, sbuf->sb_remote_len, host, sizeof(host), port, sizeof(port), NI_NUMERICHOST | NI_NUMERICSERV) != 0) {
+    	    plog(LOG_ERR, "%s: responded code is server failure (client = %s:%s)", MODULE, "unknown", "unknown");
+        } else {
+    	    plog(LOG_ERR, "%s: responded code is server failure (client = %s:%s)", MODULE, host, port);
+        }
     }
     if (rcode > 0 && session_make_error(sbuf, session, rcode, 0) >= 0)
         session_send_response(sbuf);

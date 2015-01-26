@@ -437,11 +437,10 @@ static int
 sock_udp_recv(dns_sock_buf_t *sbuf, dns_sock_t *sock)
 {
     int len;
-    socklen_t fromlen;
 
-    fromlen = sizeof(sbuf->sb_remote);
+    sbuf->sb_remote_len = sizeof(sbuf->sb_remote);
     if ((len = recvfrom(sock->sock_fd, sbuf->sb_buf, sizeof(sbuf->sb_buf), 0,
-                        (SA *) &sbuf->sb_remote, &fromlen)) < 0) {
+                        (SA *) &sbuf->sb_remote, &sbuf->sb_remote_len)) < 0) {
         if (errno != EAGAIN)
             plog_error(LOG_ERR, MODULE, "recvfrom() failed");
 
@@ -504,6 +503,8 @@ sock_tcp_select(dns_sock_t *sock, int thread_id)
     socklen_t fromlen;
     dns_sock_t *sock_tcp;
     struct sockaddr_storage from;
+    char host[NI_MAXHOST];
+    char port[NI_MAXSERV];
 
     for (;;) {
         fromlen = sizeof(struct sockaddr_storage);
@@ -511,7 +512,11 @@ sock_tcp_select(dns_sock_t *sock, int thread_id)
             if (errno == EAGAIN)
                 break;
 
-            plog_error(LOG_ERR, MODULE, "accept() failed");
+           if (getnameinfo((struct sockaddr *)&from, fromlen, host, sizeof(host), port, sizeof(port), NI_NUMERICHOST | NI_NUMERICSERV) != 0) {
+               plog_error(LOG_ERR, MODULE, "accept() failed (clinet = %s:%s)", "unkown", "unkown");
+           } else {
+               plog_error(LOG_ERR, MODULE, "accept() failed (client = %s:%s)", host, port);
+           }
             return -1;
         }
 
@@ -569,7 +574,6 @@ static int
 sock_tcp_child_recv(dns_sock_buf_t *sbuf, dns_sock_t *sock)
 {
     int len;
-    socklen_t fromlen;
 
     /* peek */
     if ((len = sock_tcp_child_getmsg(sbuf->sb_buf, sizeof(sbuf->sb_buf), MSG_PEEK, sock)) < 0)
@@ -585,8 +589,8 @@ sock_tcp_child_recv(dns_sock_buf_t *sbuf, dns_sock_t *sock)
         return -1;
     }
 
-    fromlen = sizeof(sbuf->sb_remote);
-    if (getpeername(sock->sock_fd, (SA *) &sbuf->sb_remote, &fromlen) < 0) {
+    sbuf->sb_remote_len = sizeof(sbuf->sb_remote);
+    if (getpeername(sock->sock_fd, (SA *) &sbuf->sb_remote, &sbuf->sb_remote_len) < 0) {
         plog_error(LOG_ERR, MODULE, "getpeername() failed");
         return -1;
     }
