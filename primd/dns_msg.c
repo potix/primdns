@@ -534,7 +534,7 @@ msg_decode_raw_name(char *buf, int bufmax, void *data)
 static int
 msg_decomp_name(dns_msg_handle_t *handle, void *dst, int dstmax)
 {
-    int len, offs;
+    int len, offs, loopcnt = 0;
     uint8_t *p, *d, *o;
 
     p = handle->mh_pos;
@@ -542,20 +542,29 @@ msg_decomp_name(dns_msg_handle_t *handle, void *dst, int dstmax)
     o = NULL;
 
     while (*p != 0) {
+        loopcnt++;
+        if (loopcnt >= 256) {
+            plog(LOG_NOTICE, "%s: over loop limit in decompression (%s)", MODULE, __func__);
+            return -1;
+        }
         if (!VALID_PTR(handle, p)) {
             plog(LOG_NOTICE, "%s: pointer validation failed (%s)", MODULE, __func__);
             return -1;
         }
 
         len = *p;
-        if (len & 0xc0) {
+        if ((len & 0xc0) == 0xc0) {
             /* compressed */
             if (o == NULL)
                 o = p + 2;
 
             offs = ntohs(*((uint16_t *) p)) & ~0xc000;
             p = handle->mh_buf + offs;
-        } else {
+            if (!VALID_PTR(handle, p)) {
+                plog(LOG_NOTICE, "%s: pointer validation failed (%s)", MODULE, __func__);
+                return -1;
+            }
+        } else if ((len & 0xc0) == 0x00) {
             len++;
             if (dstmax < len)
                 return -1;
@@ -568,6 +577,9 @@ msg_decomp_name(dns_msg_handle_t *handle, void *dst, int dstmax)
             p += len;
             d += len;
             dstmax -= len;
+        } else {
+            plog(LOG_NOTICE, "%s: query include reserved bit (%s)", MODULE, __func__);
+            return -1;
         }
     }
 
