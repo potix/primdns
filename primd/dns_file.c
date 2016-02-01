@@ -150,7 +150,7 @@ file_read_buf(dns_file_handle_t *handle, int plen)
     handle->fh_lnext = handle->fh_buf;
     handle->fh_buf[handle->fh_len] = 0;
 
-    return handle->fh_len;
+    return len;
 }
 
 static int
