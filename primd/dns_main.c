@@ -158,6 +158,7 @@ static void
 main_args(int argc, char *argv[])
 {
     int i;
+    int show_status = 0;
 
     for (i = 1; i < argc; i++) {
         if (argv[i][0] == '-') {
@@ -236,8 +237,7 @@ main_args(int argc, char *argv[])
                 plog_setflag(DNS_LOG_FLAG_QUERY);
                 break;
             case 's':
-                dns_control_show_status();
-                exit(EXIT_SUCCESS);
+                show_status++;
                 break;
             case 't':
                 /* XXX chroot dir */
@@ -292,6 +292,10 @@ main_args(int argc, char *argv[])
                 break;
             }
         }
+    }
+    if (show_status > 0) {
+        dns_control_show_status();
+        exit(EXIT_SUCCESS);
     }
 }
 
