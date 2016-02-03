@@ -7,7 +7,7 @@
 
 Name:     %{package_name}
 Version:  %{package_version}
-Release:  1
+Release:  1%{?dist}
 Group:    System Environment/Daemons
 Vendor:   Satoshi Ebisawa <ebisawa@gmail.com>
 Packager: Hiroyuki Kakine <poti.dog@gmail.com>
@@ -30,9 +30,17 @@ make
 
 %install
 make install
+%if 7%{?rhl}
+mkdir -p "$RPM_BUILD_ROOT%{sysconf_install_prefix}/etc/systemd/system"
+%else
 mkdir -p "$RPM_BUILD_ROOT%{sysconf_install_prefix}/etc/init.d"
+%endif
 mkdir -p "$RPM_BUILD_ROOT%{sysconf_install_prefix}/etc/sysconfig"
+%if 7%{?rhl}
+install -c -m 755 "%{_builddir}/%{package_name}-%{package_version}/primd/rc/primd.service" "$RPM_BUILD_ROOT%{sysconf_install_prefix}/etc/systemd/system"
+%else
 install -c -m 755 "%{_builddir}/%{package_name}-%{package_version}/primd/rc/primd.init.sh" "$RPM_BUILD_ROOT%{sysconf_install_prefix}/etc/init.d/primd"
+%endif
 install -c -m 644 "%{_builddir}/%{package_name}-%{package_version}/primd/rc/primd.sysconfig" "$RPM_BUILD_ROOT%{sysconf_install_prefix}/etc/sysconfig/primd"
 
 %clean
@@ -49,5 +57,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{sysconf_install_prefix}/etc/primdns/localhost.zone
 %config(noreplace) %{sysconf_install_prefix}/etc/primdns/primd.conf
 %config(noreplace) %{sysconf_install_prefix}/etc/primdns/primd.conf
+%if 7%{?rhl}
+%{sysconf_install_prefix}/etc/systemd
+%else
 %{sysconf_install_prefix}/etc/init.d
+%endif
 %config(noreplace) %{sysconf_install_prefix}/etc/sysconfig

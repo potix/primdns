@@ -3,4 +3,4 @@ primd_SOURCES = dns_abq.c dns_acl.c dns_arc4random.c dns_axfr.c dns_babq.c dns_c
 primd_SOURCES += dns.h dns_abq.h dns_acl.h dns_arc4random.h dns_atomic.h dns_axfr.h dns_babq.h dns_cache.h dns_config.h dns_control.h dns_data.h dns_engine.h dns_external.h dns_file.h dns_forward.h dns_list.h dns_log.h dns_msg.h dns_notify.h dns_pool.h dns_proto.h dns_query.h dns_serverid.h dns_session.h dns_sock.h dns_timer.h dns_util.h
 primd_CFLAGS = -Wall -Wstrict-prototypes -Wmissing-prototypes -Wno-sign-compare -Wno-traditional -Wreturn-type -Wswitch -pipe -g -O2
 
-EXTRA_DIST = rc/primd.init.sh rc/primd.sysconfig
+EXTRA_DIST = rc/primd.init.sh rc/primd.sysconfig rc/primd.service
