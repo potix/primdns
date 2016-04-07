@@ -96,7 +96,7 @@ static int session_read_edns_opt(dns_session_t *session, dns_sock_buf_t *sbuf, d
 static int session_check_question_header(dns_header_t *header);
 static dns_cache_rrset_t *session_query_answer(dns_session_t *session, dns_sock_buf_t *sbuf);
 static dns_cache_rrset_t *session_query_authority(dns_session_t *session, dns_cache_rrset_t *rrset, int *auth_type);
-static dns_cache_rrset_t *session_query_referral(dns_session_t *session, const char *last_engine);
+static dns_cache_rrset_t *session_query_referral(dns_session_t *session, const char *last_engine, unsigned dns_rcode);
 static dns_cache_rrset_t *session_query_referral_do(dns_session_t *session, char *name);
 static dns_cache_rrset_t *session_query_recursive(dns_session_t *session, dns_config_zone_t *zone, dns_msg_question_t *q, int nlevel);
 static void session_query_cname(dns_session_t *session, dns_msg_question_t *q, dns_cache_rrset_t *rrset, int nlevel);
@@ -650,7 +650,7 @@ session_query_authority(dns_session_t *session, dns_cache_rrset_t *rrset_an, int
     dns_cache_rrset_t *rrset_ns = NULL;
 
     /* referral */
-    if ((rrset_ns = session_query_referral(session, rrset_an->rrset_last_engine)) != NULL) {
+    if ((rrset_ns = session_query_referral(session, rrset_an->rrset_last_engine, rrset_an->rrset_dns_rcode)) != NULL) {
         dns_cache_set_rcode(rrset_an, DNS_RCODE_NOERROR);
         if (rrset_an->rrset_last_engine == NULL || strcasecmp(rrset_an->rrset_last_engine, "forward") != 0) {
             session->sess_iflags |= SESSION_NO_ANSWER;
@@ -683,7 +683,7 @@ session_query_authority(dns_session_t *session, dns_cache_rrset_t *rrset_an, int
 }
 
 static dns_cache_rrset_t *
-session_query_referral(dns_session_t *session, const char *last_engine)
+session_query_referral(dns_session_t *session, const char *last_engine, unsigned dns_rcode)
 {
     char *p;
     int offs;
@@ -691,6 +691,8 @@ session_query_referral(dns_session_t *session, const char *last_engine)
     dns_cache_rrset_t *rrset;
 
     if (last_engine != NULL && strcasecmp(last_engine, "forward") == 0) {
+        if (dns_rcode == DNS_RCODE_SERVFAIL)
+            return NULL;
         level = 0;
         p = session->sess_qlast.mq_name;
 
